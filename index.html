@@ -3,13 +3,13 @@
 <title>Kunal Saraswat | Linux Developer</title>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500;700&display=swap');
-    
+
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
-    
+
     body {
         font-family: 'Ubuntu', sans-serif;
         background: linear-gradient(135deg, #2c1810 0%, #1a1a1a 25%, #0f0f0f 100%);
@@ -17,7 +17,7 @@
         min-height: 100vh;
         overflow-x: hidden;
     }
-    
+
     /* Mobile message styling */
     .mobile-message {
         display: none;
@@ -34,31 +34,31 @@
         justify-content: center;
         align-items: center;
     }
-    
+
     .mobile-message h1 {
         color: #ff6b35;
         font-size: 2rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .mobile-message p {
         font-size: 1.2rem;
         margin-bottom: 2rem;
         max-width: 600px;
         line-height: 1.6;
     }
-    
+
     .mobile-message .emoji {
         font-size: 3rem;
         margin-bottom: 1.5rem;
         animation: float 3s ease-in-out infinite;
     }
-    
+
     @keyframes float {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-20px); }
     }
-    
+
     /* Linux-style taskbar */
     .taskbar {
         position: fixed;
@@ -75,13 +75,13 @@
         z-index: 1000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-    
+
     .taskbar-left {
         display: flex;
         align-items: center;
         gap: 15px;
     }
-    
+
     .taskbar-logo {
         display: flex;
         align-items: center;
@@ -90,12 +90,12 @@
         font-weight: 700;
         color: #ff6b35;
     }
-    
+
     .taskbar-menu {
         display: flex;
         gap: 10px;
     }
-    
+
     .taskbar-item {
         padding: 5px 10px;
         background: rgba(255,255,255,0.1);
@@ -104,24 +104,24 @@
         cursor: pointer;
         transition: background 0.2s;
     }
-    
+
     .taskbar-item:hover {
         background: rgba(255,255,255,0.2);
     }
-    
+
     .taskbar-right {
         display: flex;
         align-items: center;
         gap: 15px;
         font-size: 12px;
     }
-    
+
     .system-info {
         display: flex;
         gap: 15px;
         align-items: center;
     }
-    
+
     .page-counter {
         display: flex;
         align-items: center;
@@ -135,11 +135,11 @@
         color: #ff6b35;
         font-weight: 500;
     }
-    
+
     .page-counter-icon {
         font-size: 10px;
     }
-    
+
     .terminal-window {
         margin-top: 50px;
         background: #1a1a1a;
@@ -148,7 +148,7 @@
         overflow: hidden;
         box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     }
-    
+
     .terminal-header {
         background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
         padding: 8px 15px;
@@ -157,43 +157,43 @@
         gap: 10px;
         border-bottom: 1px solid #555;
     }
-    
+
     .window-controls {
         display: flex;
         gap: 5px;
     }
-    
+
     .control-btn {
         width: 12px;
         height: 12px;
         border-radius: 50%;
         cursor: pointer;
     }
-    
+
     .close {
         background: #ff5555;
     }
-    
+
     .minimize {
         background: #ffaa00;
     }
-    
+
     .maximize {
         background: #00ff00;
     }
-    
+
     .terminal-title {
         color: #e8e8e8;
         font-size: 12px;
         font-weight: 500;
     }
-    
+
     .header {
         padding: 3rem 2rem;
         text-align: center;
         position: relative;
     }
-    
+
     .terminal-content {
         background: #0c0c0c;
         padding: 20px;
@@ -202,41 +202,41 @@
         line-height: 1.6;
         text-align: left;
     }
-    
+
     .terminal-line {
         margin-bottom: 8px;
         animation: typewriter 2s steps(50) forwards;
         opacity: 0;
     }
-    
+
     .terminal-line:nth-child(1) {
         animation-delay: 0.5s;
     }
-    
+
     .terminal-line:nth-child(2) {
         animation-delay: 1s;
     }
-    
+
     .terminal-line:nth-child(3) {
         animation-delay: 1.5s;
     }
-    
+
     .terminal-line:nth-child(4) {
         animation-delay: 2s;
     }
-    
+
     .prompt {
         color: #00ff00;
     }
-    
+
     .command {
         color: #87ceeb;
     }
-    
+
     .output {
         color: #ffa500;
     }
-    
+
     .brand-info {
         background: rgba(0,0,0,0.7);
         border: 1px solid #444;
@@ -246,7 +246,7 @@
         max-width: 800px;
         backdrop-filter: blur(10px);
     }
-    
+
     .main-title {
         font-size: clamp(2rem, 6vw, 3.5rem);
         font-weight: 700;
@@ -255,14 +255,14 @@
         text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
         font-family: 'Ubuntu', sans-serif;
     }
-    
+
     .subtitle {
         font-size: 1.2rem;
         color: #87ceeb;
         margin-bottom: 1.5rem;
         font-weight: 300;
     }
-    
+
     .system-specs {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -271,21 +271,21 @@
         font-size: 12px;
         color: #bbb;
     }
-    
+
     .spec-line {
         display: flex;
         justify-content: space-between;
         padding: 5px 0;
         border-bottom: 1px solid #333;
     }
-    
+
     /* File Manager Style Projects Section */
     .projects {
         padding: 3rem 2rem;
         max-width: 1200px;
         margin: 0 auto;
     }
-    
+
     .file-manager {
         background: #1a1a1a;
         border: 1px solid #444;
@@ -293,7 +293,7 @@
         overflow: hidden;
         box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     }
-    
+
     .file-manager-header {
         background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
         padding: 8px 15px;
@@ -302,7 +302,7 @@
         justify-content: space-between;
         border-bottom: 1px solid #555;
     }
-    
+
     .file-manager-title {
         display: flex;
         align-items: center;
@@ -311,7 +311,7 @@
         font-size: 12px;
         font-weight: 500;
     }
-    
+
     .file-manager-nav {
         background: #2a2a2a;
         padding: 10px 15px;
@@ -320,12 +320,12 @@
         font-size: 12px;
         color: #87ceeb;
     }
-    
+
     .file-list {
         background: #0f0f0f;
         padding: 20px;
     }
-    
+
     .file-item {
         display: flex;
         align-items: center;
@@ -339,43 +339,43 @@
         transition: all 0.3s ease;
         position: relative;
     }
-    
+
     .file-item:hover {
         background: rgba(255,107,53,0.1);
         border-color: #ff6b35;
         transform: translateX(5px);
     }
-    
+
     .file-icon {
         font-size: 24px;
         width: 30px;
         text-align: center;
     }
-    
+
     .file-info {
         flex: 1;
     }
-    
+
     .file-name {
         font-size: 16px;
         font-weight: 500;
         color: #e8e8e8;
         margin-bottom: 5px;
     }
-    
+
     .file-description {
         font-size: 14px;
         color: #bbb;
         line-height: 1.4;
     }
-    
+
     .file-meta {
         font-family: 'Ubuntu Mono', monospace;
         font-size: 12px;
         color: #888;
         text-align: right;
     }
-    
+
     .execute-btn {
         background: linear-gradient(45deg, #ff6b35, #f7931e);
         color: white;
@@ -387,18 +387,18 @@
         font-weight: 500;
         transition: all 0.2s;
     }
-    
+
     .execute-btn:hover {
         transform: scale(1.05);
         box-shadow: 0 5px 15px rgba(255,107,53,0.3);
     }
-    
+
     /* Contact Section - System Notification Style */
     .contact {
         padding: 3rem 2rem;
         text-align: center;
     }
-    
+
     .notification-panel {
         background: #1a1a1a;
         border: 1px solid #444;
@@ -408,7 +408,7 @@
         margin: 0 auto;
         box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     }
-    
+
     .notification-header {
         display: flex;
         align-items: center;
@@ -416,7 +416,7 @@
         margin-bottom: 2rem;
         justify-content: center;
     }
-    
+
     .notification-icon {
         width: 24px;
         height: 24px;
@@ -428,20 +428,20 @@
         color: white;
         font-size: 12px;
     }
-    
+
     .contact-title {
         font-size: 1.5rem;
         color: #87ceeb;
         font-weight: 500;
     }
-    
+
     .contact-links {
         display: flex;
         justify-content: center;
         gap: 15px;
         flex-wrap: wrap;
     }
-    
+
     .contact-link {
         display: flex;
         align-items: center;
@@ -455,25 +455,25 @@
         transition: all 0.3s ease;
         font-size: 14px;
     }
-    
+
     .contact-link:hover {
         background: rgba(255,107,53,0.1);
         border-color: #ff6b35;
         transform: translateY(-2px);
     }
-    
+
     .contact-icon {
         width: 16px;
         height: 16px;
     }
-    
+
     .feedback-list {
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-top: 1rem;
     }
-    
+
     /* Footer - Status Bar Style */
     .footer {
         background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
@@ -486,60 +486,60 @@
         font-size: 12px;
         color: #bbb;
     }
-    
+
     .status-left {
         display: flex;
         gap: 20px;
     }
-    
+
     .status-right {
         display: flex;
         gap: 15px;
     }
-    
+
     /* Animations */
     @keyframes typewriter {
         to { opacity: 1; }
     }
-    
+
     @keyframes blink {
         0%, 50% { opacity: 1; }
         51%, 100% { opacity: 0; }
     }
-    
+
     .cursor {
         animation: blink 1s infinite;
     }
-    
+
     /* Responsive */
     @media (max-width: 768px) {
         .taskbar {
             padding: 0 10px;
         }
-        
+
         .taskbar-menu {
             display: none;
         }
-        
+
         .system-info {
             gap: 10px;
         }
-        
+
         .system-specs {
             grid-template-columns: 1fr;
         }
-        
+
         .contact-links {
             flex-direction: column;
             align-items: center;
         }
-        
+
         .footer {
             flex-direction: column;
             gap: 10px;
             text-align: center;
         }
-        
+
         .page-counter {
             font-size: 10px;
             padding: 3px 6px;
@@ -569,7 +569,7 @@
                 <span>Views: <span id="page-views">0</span></span>
             </div>
             <span>🌐 WiFi</span>
-            <span>🔋 85%</span>
+            <span id="battery-status">🔋 85%</span>
             <span id="current-time">12:34</span>
         </div>
     </div>
@@ -736,13 +736,13 @@
     function checkMobileDevice() {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const isTablet = /iPad|Android|Tablet/i.test(navigator.userAgent) && !/Mobile/i.test(navigator.userAgent);
-        
+
         if (isMobile && !isTablet) {
             document.getElementById('mobile-message').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
     }
-    
+
     // Run mobile check when page loads
     window.addEventListener('load', checkMobileDevice);
 
@@ -750,11 +750,11 @@
     function initPageCounter() {
         // Option 1: Use a free counter service (recommended for deployment)
         initGlobalCounter();
-        
+
         // Option 2: Fallback to local storage for development/testing
         // initLocalCounter();
     }
-    
+
     // Global counter using a free service
     function initGlobalCounter() {
         try {
@@ -775,23 +775,23 @@
             initLocalCounter();
         }
     }
-    
+
     // Local counter fallback (for development/testing)
     function initLocalCounter() {
         const pageViewsKey = 'kunal-portfolio-views';
         let currentViews = parseInt(localStorage.getItem(pageViewsKey) || '0');
-        
+
         // Increment the counter
         currentViews++;
-        
+
         // Store the new count
         localStorage.setItem(pageViewsKey, currentViews.toString());
-        
+
         // Display the count
         document.getElementById('page-views').textContent = currentViews.toLocaleString();
         animateCounter();
     }
-    
+
     // Animation function
     function animateCounter() {
         const counterElement = document.querySelector('.page-counter');
@@ -800,29 +800,70 @@
             counterElement.style.transform = 'scale(1)';
         }, 200);
     }
-    
+    // Battery status functionality
+function updateBatteryStatus() {
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(function(battery) {
+            updateBatteryInfo(battery);
+
+            // Add event listeners for battery changes
+            battery.addEventListener('levelchange', function() {
+                updateBatteryInfo(battery);
+            });
+
+            battery.addEventListener('chargingchange', function() {
+                updateBatteryInfo(battery);
+            });
+        });
+    } else {
+        // Fallback for browsers that don't support the Battery API
+        document.getElementById('battery-status').textContent = '🔋 N/A';
+    }
+}
+
+function updateBatteryInfo(battery) {
+    const batteryPercent = Math.round(battery.level * 100);
+    let batteryIcon = '🔋'; // Default battery icon
+
+    // Choose different icons based on battery level and charging status
+    if (battery.charging) {
+        batteryIcon = '⚡'; // Charging icon
+    } else if (batteryPercent <= 20) {
+        batteryIcon = '🪫'; // Low battery icon
+    } else if (batteryPercent <= 50) {
+        batteryIcon = '🔋'; // Half battery icon
+    } else {
+        batteryIcon = '🔋'; // Full battery icon
+    }
+
+    document.getElementById('battery-status').textContent =
+        `${batteryIcon} ${batteryPercent}%${battery.charging ? ' (Charging)' : ''}`;
+}
+
+// Initialize battery status when page loads
+window.addEventListener('load', updateBatteryStatus);
     // Initialize page counter when page loads
     window.addEventListener('load', initPageCounter);
-    
+
     // Function to format uptime from seconds to days, hours, minutes, seconds
     function formatUptime(totalSeconds) {
         const days = Math.floor(totalSeconds / (24 * 3600));
         const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = Math.floor(totalSeconds % 60);
-        
+
         return `Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
-    
+
     // Start with 3 days, 5 minutes, and 10 seconds (in seconds)
     let uptimeSeconds = (3 * 24 * 3600) + (5 * 60) + 10;
-    
+
     // Update uptime every second
     function updateUptime() {
         uptimeSeconds++;
         document.getElementById('uptime').textContent = formatUptime(uptimeSeconds);
     }
-    
+
     // Update memory usage (using performance.memory if available)
     function updateMemory() {
         let memoryInfo = 'Mem: Unknown';
@@ -836,7 +877,7 @@
         }
         document.getElementById('memory').textContent = memoryInfo;
     }
-    
+
     // Update time in taskbar
     function updateTime() {
         const now = new Date();
@@ -847,17 +888,17 @@
         });
         document.getElementById('current-time').textContent = timeString;
     }
-    
+
     // Initial updates
     updateUptime();
     updateMemory();
     updateTime();
-    
+
     // Update every second
     setInterval(updateUptime, 1000);
     setInterval(updateMemory, 60000); // Update memory every minute
     setInterval(updateTime, 1000);
-    
+
     // Feedback email function
     function sendFeedbackEmail(projectKey) {
         const projects = {
@@ -866,10 +907,10 @@
             'portfolio': 'Portfolio Website',
             'other': 'Other Project'
         };
-        
+
         const projectName = projects[projectKey] || projects['other'];
         let subject, body;
-        
+
         if (projectKey === 'linux-tool' || projectKey === 'kernel-tool') {
             subject = `${projectName} Feedback! 🐧`;
             body = `Hey Kunal,%0D%0A%0D%0AI'm using your ${projectName} and wanted to share some thoughts:%0D%0A%0D%0A🚀 My favorite features:%0D%0A💡 Suggestions for improvement:%0D%0A🐞 Any issues encountered:%0D%0A%0D%0AAdditional notes:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
@@ -880,21 +921,21 @@
             subject = `Feedback about ${projectName}`;
             body = `Hey Kunal,%0D%0A%0D%0AI wanted to share some feedback about ${projectName}:%0D%0A%0D%0AWhat I liked:%0D%0ASuggestions:%0D%0AOther comments:%0D%0A%0D%0ARegards,%0D%0A[Your Name]`;
         }
-        
+
         window.open(
             `https://mail.google.com/mail/?view=cm&fs=1&to=kunalsaraswat@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`,
             '_blank'
         );
     }
-    
+
     // Toggle feedback list visibility
     function showFeedbackList() {
         const feedbackList = document.getElementById('feedback-list');
         feedbackList.style.display = feedbackList.style.display === 'none' ? 'flex' : 'none';
     }
-    
+
     // Add click sound effect (optional)
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function(e) {F
         if (e.target.classList.contains('file-item') || e.target.classList.contains('execute-btn')) {
             // Could add a subtle click sound here
         }
