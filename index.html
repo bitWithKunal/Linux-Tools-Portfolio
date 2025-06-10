@@ -331,7 +331,8 @@
             padding: 2rem;
             max-width: 600px;
             margin: 0 auto;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            box-shadow: streptomycin
+0 5px 20px rgba(0,0,0,0.4);
         }
 
         .notification-header {
@@ -390,6 +391,13 @@
         .contact-icon {
             width: 16px;
             height: 16px;
+        }
+
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1rem;
         }
 
         /* Footer - Status Bar Style */
@@ -467,7 +475,7 @@
     <div class="taskbar">
         <div class="taskbar-left">
             <div class="taskbar-logo">
-                🐧 Linux Project Portfolio
+                🐧 Ubuntu
             </div>
         </div>
         <div class="taskbar-right">
@@ -567,7 +575,7 @@
                     </div>
                     <div class="file-meta">
                         <div>Type: Web App</div>
-                        <div>Size: 12.4 MB</div>
+                        <div>Size: 2.4 MB</div>
                         <div>Version: 5.2</div>
                         <div>Modified: 2025-06-07</div>
                         <button class="execute-btn">Execute</button>
@@ -580,14 +588,14 @@
                         <div class="file-name">linux-kernel-master</div>
                         <div class="file-description">
                             Comprehensive guide to Linux Kernel architecture, subsystems, and development workflows.
-                            Dive deep into kernel modules, system calls, and kernel hacking techniques.
+                            Dive deep into kernel modules, system calls, and kernel module development techniques.
                         </div>
                     </div>
                     <div class="file-meta">
                         <div>Type: Web App</div>
-                        <div>Size: 15.1 MB</div>
-                        <div>Version: 3.1 MB</div>
-                        <div>Modified: 2025-06-09</div>
+                        <div>Size: 5.1 MB</div>
+                        <div>Version: 3.1 </div>
+                        <div>Modified: 2025-06-10</div>
                         <button class="execute-btn">Execute</button>
                     </div>
                 </div>
@@ -609,12 +617,18 @@
                     </svg>
                     LinkedIn
                 </a>
-                <a href="#" onclick="sendFeedbackEmail()" class="contact-link">
+                <div class="contact-link" onclick="showFeedbackList()">
                     <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
                     </svg>
                     Send Feedback
-                </a>
+                </div>
+            </div>
+            <div class="feedback-list" id="feedback-list" style="display: none;">
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('linux-tool')">Linux Command Explorer</a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('kernel-tool')">Linux Kernel Master Tool</a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('portfolio')">Portfolio Website</a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('other')">Other Project</a>
             </div>
         </div>
     </section>
@@ -622,9 +636,59 @@
     <!-- Status Bar Footer -->
     <footer class="footer">
         <div class="status-right">
-            <span>© 2025 Kunal Saraswat</span>
-            <span>Kernel: 5.15.0-generic</span>
-        </div>
+
+    </div>
+
+    <script>
+        // Function to format uptime from milliseconds to days, hours, minutes
+        function formatUptime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const days = Math.floor(seconds / (24 * 3600));
+            const hours = Math.floor((seconds % (24 * 3600)) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `Uptime: ${days}d ${hours}h ${minutes}m`;
+        }
+
+        // Start time for uptime calculation (simulating tool start time)
+        const startTime = Date.now();
+
+        // Update uptime every minute
+        function updateUptime() {
+            const uptime = Date.now() - startTime;
+            document.getElementById('uptime').textContent = formatUptime(uptime);
+        }
+
+        // Update memory usage (using performance.memory if available)
+        function updateMemory() {
+            let memoryInfo = 'Mem: Unknown';
+            if (window.performance && window.performance.memory) {
+                const used = (window.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1);
+                const total = (window.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1);
+                memoryInfo = `Mem: ${used}/${total} MB`;
+            } else {
+                // Fallback for browsers without performance.memory
+                memoryInfo = `Mem: 4.2/8.0 GB`; // Placeholder
+            }
+            document.getElementById('memory').textContent = memoryInfo;
+        }
+
+        // Initial updates
+        updateUptime();
+        updateMemory();
+
+        // Update every minute
+        setInterval(() => {
+            updateUptime();
+            updateMemory();
+        }, 60000);
+    </script>
+
+    <!-- Rest of the original HTML content -->
+    <footer>
+        <span>© 2025 Kunal Saraswat</span>
+        <span>Kernel: 5.15.0-generic</span>
+        <span>Tool Version: 6.3.0</span>
+    </footer>
     </footer>
 
     <script>
@@ -643,20 +707,16 @@
         updateTime();
 
         // Feedback email function
-        function sendFeedbackEmail() {
+        function sendFeedbackEmail(projectKey) {
             const projects = {
                 'linux-tool': 'Linux Command Explorer',
+
+
                 'kernel-tool': 'Linux Kernel Master Tool',
                 'portfolio': 'Portfolio Website',
                 'other': 'Other Project'
             };
 
-            const projectList = Object.entries(projects).map(([key, value]) => `• ${key} - ${value}`).join('\n');
-            const selectedProject = prompt(`Which project would you like to provide feedback on?\n\n${projectList}\n`, 'linux-tool');
-
-            if (!selectedProject) return;
-
-            const projectKey = selectedProject.toLowerCase();
             const projectName = projects[projectKey] || projects['other'];
 
             let subject, body;
@@ -664,12 +724,10 @@
             if (projectKey === 'linux-tool' || projectKey === 'kernel-tool') {
                 subject = `${projectName} Feedback! 🐧`;
                 body = `Hey Kunal,%0D%0A%0D%0AI'm using your ${projectName} and wanted to share some thoughts:%0D%0A%0D%0A🚀 My favorite features:%0D%0A💡 Suggestions for improvement:%0D%0A🐞 Any issues encountered:%0D%0A%0D%0AAdditional notes:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
-            }
-            else if (projectKey === 'portfolio') {
+            } else if (projectKey === 'portfolio') {
                 subject = `${projectName} Feedback! ✨`;
                 body = `Hey Kunal,%0D%0A%0D%0AYour ${projectName} looks great! Here's my feedback:%0D%0A%0D%0A👍 What I love:%0D%0A💡 Suggestions for improvement:%0D%0A🔍 Any issues I noticed:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
-            }
-            else {
+            } else {
                 subject = `Feedback about ${projectName}`;
                 body = `Hey Kunal,%0D%0A%0D%0AI wanted to share some feedback about ${projectName}:%0D%0A%0D%0AWhat I liked:%0D%0ASuggestions:%0D%0AOther comments:%0D%0A%0D%0ARegards,%0D%0A[Your Name]`;
             }
@@ -678,6 +736,12 @@
                 `https://mail.google.com/mail/?view=cm&fs=1&to=kunalsaraswat@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`,
                 '_blank'
             );
+        }
+
+        // Toggle feedback list visibility
+        function showFeedbackList() {
+            const feedbackList = document.getElementById('feedback-list');
+            feedbackList.style.display = feedbackList.style.display === 'none' ? 'flex' : 'none';
         }
 
         // Add click sound effect (optional)
