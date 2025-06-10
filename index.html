@@ -84,6 +84,24 @@
             align-items: center;
         }
 
+        .page-counter {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid #ff6b35;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 11px;
+            color: #ff6b35;
+            font-weight: 500;
+        }
+
+        .page-counter-icon {
+            font-size: 10px;
+        }
+
         .terminal-window {
             margin-top: 50px;
             background: #1a1a1a;
@@ -331,8 +349,7 @@
             padding: 2rem;
             max-width: 600px;
             margin: 0 auto;
-            box-shadow: streptomycin
-0 5px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
         }
 
         .notification-header {
@@ -467,6 +484,11 @@
                 gap: 10px;
                 text-align: center;
             }
+
+            .page-counter {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
         }
     </style>
 </head>
@@ -480,6 +502,10 @@
         </div>
         <div class="taskbar-right">
             <div class="system-info">
+                <div class="page-counter">
+                    <span class="page-counter-icon">👁️</span>
+                    <span>Views: <span id="page-views">0</span></span>
+                </div>
                 <span>🌐 WiFi</span>
                 <span>🔋 85%</span>
                 <span id="current-time">12:34</span>
@@ -635,11 +661,77 @@
 
     <!-- Status Bar Footer -->
     <footer class="footer">
+        <div class="status-left">
+            <span>© 2025 Kunal Saraswat</span>
+            <span>Kernel: 5.15.0-generic</span>
+            <span>Tool Version: 6.3.0</span>
+        </div>
         <div class="status-right">
-
-    </div>
+            <span id="uptime">Uptime: 0d 0h 0m</span>
+            <span id="memory">Mem: 0/0 MB</span>
+        </div>
+    </footer>
 
     <script>
+        // Page View Counter with Multiple Options
+        function initPageCounter() {
+            // Option 1: Use a free counter service (recommended for deployment)
+            initGlobalCounter();
+
+            // Option 2: Fallback to local storage for development/testing
+            // initLocalCounter();
+        }
+
+        // Global counter using a free service
+        function initGlobalCounter() {
+            try {
+                // Using CountAPI - a free, simple counter service
+                const counterUrl = 'https://api.countapi.xyz/hit/kunal-portfolio/views';
+
+                fetch(counterUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('page-views').textContent = data.value.toLocaleString();
+                        animateCounter();
+                    })
+                    .catch(error => {
+                        console.log('Counter service unavailable, using fallback');
+                        initLocalCounter();
+                    });
+            } catch (error) {
+                console.log('Error with global counter, using local fallback');
+                initLocalCounter();
+            }
+        }
+
+        // Local counter fallback (for development/testing)
+        function initLocalCounter() {
+            const pageViewsKey = 'kunal-portfolio-views';
+            let currentViews = parseInt(localStorage.getItem(pageViewsKey) || '0');
+
+            // Increment the counter
+            currentViews++;
+
+            // Store the new count
+            localStorage.setItem(pageViewsKey, currentViews.toString());
+
+            // Display the count
+            document.getElementById('page-views').textContent = currentViews.toLocaleString();
+            animateCounter();
+        }
+
+        // Animation function
+        function animateCounter() {
+            const counterElement = document.querySelector('.page-counter');
+            counterElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                counterElement.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Initialize page counter when page loads
+        window.addEventListener('load', initPageCounter);
+
         // Function to format uptime from milliseconds to days, hours, minutes
         function formatUptime(ms) {
             const seconds = Math.floor(ms / 1000);
@@ -672,26 +764,6 @@
             document.getElementById('memory').textContent = memoryInfo;
         }
 
-        // Initial updates
-        updateUptime();
-        updateMemory();
-
-        // Update every minute
-        setInterval(() => {
-            updateUptime();
-            updateMemory();
-        }, 60000);
-    </script>
-
-    <!-- Rest of the original HTML content -->
-    <footer>
-        <span>© 2025 Kunal Saraswat</span>
-        <span>Kernel: 5.15.0-generic</span>
-        <span>Tool Version: 6.3.0</span>
-    </footer>
-    </footer>
-
-    <script>
         // Update time in taskbar
         function updateTime() {
             const now = new Date();
@@ -703,15 +775,23 @@
             document.getElementById('current-time').textContent = timeString;
         }
 
-        setInterval(updateTime, 1000);
+        // Initial updates
+        updateUptime();
+        updateMemory();
         updateTime();
+
+        // Update every minute
+        setInterval(() => {
+            updateUptime();
+            updateMemory();
+        }, 60000);
+
+        setInterval(updateTime, 1000);
 
         // Feedback email function
         function sendFeedbackEmail(projectKey) {
             const projects = {
                 'linux-tool': 'Linux Command Explorer',
-
-
                 'kernel-tool': 'Linux Kernel Master Tool',
                 'portfolio': 'Portfolio Website',
                 'other': 'Other Project'
