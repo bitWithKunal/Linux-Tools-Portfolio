@@ -1,835 +1,902 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kunal Saraswat | Linux Developer</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Ubuntu', sans-serif;
-            background: linear-gradient(135deg, #2c1810 0%, #1a1a1a 25%, #0f0f0f 100%);
-            color: #e8e8e8;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Linux-style taskbar */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kunal Saraswat | Linux Developer</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500;700&display=swap');
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Ubuntu', sans-serif;
+        background: linear-gradient(135deg, #2c1810 0%, #1a1a1a 25%, #0f0f0f 100%);
+        color: #e8e8e8;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    
+    /* Mobile message styling */
+    .mobile-message {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #0f0f0f;
+        z-index: 9999;
+        padding: 2rem;
+        text-align: center;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .mobile-message h1 {
+        color: #ff6b35;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .mobile-message p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        line-height: 1.6;
+    }
+    
+    .mobile-message .emoji {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    /* Linux-style taskbar */
+    .taskbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
+        border-bottom: 1px solid #666;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    
+    .taskbar-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .taskbar-logo {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #ff6b35;
+    }
+    
+    .taskbar-menu {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .taskbar-item {
+        padding: 5px 10px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 3px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .taskbar-item:hover {
+        background: rgba(255,255,255,0.2);
+    }
+    
+    .taskbar-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 12px;
+    }
+    
+    .system-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .page-counter {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 107, 53, 0.15);
+        border: 1px solid #ff6b35;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-family: 'Ubuntu Mono', monospace;
+        font-size: 11px;
+        color: #ff6b35;
+        font-weight: 500;
+    }
+    
+    .page-counter-icon {
+        font-size: 10px;
+    }
+    
+    .terminal-window {
+        margin-top: 50px;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+    
+    .terminal-header {
+        background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
+        padding: 8px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #555;
+    }
+    
+    .window-controls {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .control-btn {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .close {
+        background: #ff5555;
+    }
+    
+    .minimize {
+        background: #ffaa00;
+    }
+    
+    .maximize {
+        background: #00ff00;
+    }
+    
+    .terminal-title {
+        color: #e8e8e8;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .header {
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .terminal-content {
+        background: #0c0c0c;
+        padding: 20px;
+        font-family: 'Ubuntu Mono', monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: left;
+    }
+    
+    .terminal-line {
+        margin-bottom: 8px;
+        animation: typewriter 2s steps(50) forwards;
+        opacity: 0;
+    }
+    
+    .terminal-line:nth-child(1) {
+        animation-delay: 0.5s;
+    }
+    
+    .terminal-line:nth-child(2) {
+        animation-delay: 1s;
+    }
+    
+    .terminal-line:nth-child(3) {
+        animation-delay: 1.5s;
+    }
+    
+    .terminal-line:nth-child(4) {
+        animation-delay: 2s;
+    }
+    
+    .prompt {
+        color: #00ff00;
+    }
+    
+    .command {
+        color: #87ceeb;
+    }
+    
+    .output {
+        color: #ffa500;
+    }
+    
+    .brand-info {
+        background: rgba(0,0,0,0.7);
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 2rem;
+        margin: 2rem auto;
+        max-width: 800px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .main-title {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-weight: 700;
+        color: #ff6b35;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        font-family: 'Ubuntu', sans-serif;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        color: #87ceeb;
+        margin-bottom: 1.5rem;
+        font-weight: 300;
+    }
+    
+    .system-specs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        font-family: 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        color: #bbb;
+    }
+    
+    .spec-line {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #333;
+    }
+    
+    /* File Manager Style Projects Section */
+    .projects {
+        padding: 3rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .file-manager {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+    
+    .file-manager-header {
+        background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
+        padding: 8px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #555;
+    }
+    
+    .file-manager-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #e8e8e8;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .file-manager-nav {
+        background: #2a2a2a;
+        padding: 10px 15px;
+        border-bottom: 1px solid #444;
+        font-family: 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        color: #87ceeb;
+    }
+    
+    .file-list {
+        background: #0f0f0f;
+        padding: 20px;
+    }
+    
+    .file-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        margin-bottom: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid #333;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .file-item:hover {
+        background: rgba(255,107,53,0.1);
+        border-color: #ff6b35;
+        transform: translateX(5px);
+    }
+    
+    .file-icon {
+        font-size: 24px;
+        width: 30px;
+        text-align: center;
+    }
+    
+    .file-info {
+        flex: 1;
+    }
+    
+    .file-name {
+        font-size: 16px;
+        font-weight: 500;
+        color: #e8e8e8;
+        margin-bottom: 5px;
+    }
+    
+    .file-description {
+        font-size: 14px;
+        color: #bbb;
+        line-height: 1.4;
+    }
+    
+    .file-meta {
+        font-family: 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        color: #888;
+        text-align: right;
+    }
+    
+    .execute-btn {
+        background: linear-gradient(45deg, #ff6b35, #f7931e);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .execute-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(255,107,53,0.3);
+    }
+    
+    /* Contact Section - System Notification Style */
+    .contact {
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+    
+    .notification-panel {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+    
+    .notification-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 2rem;
+        justify-content: center;
+    }
+    
+    .notification-icon {
+        width: 24px;
+        height: 24px;
+        background: #ff6b35;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+    }
+    
+    .contact-title {
+        font-size: 1.5rem;
+        color: #87ceeb;
+        font-weight: 500;
+    }
+    
+    .contact-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .contact-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid #444;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #e8e8e8;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .contact-link:hover {
+        background: rgba(255,107,53,0.1);
+        border-color: #ff6b35;
+        transform: translateY(-2px);
+    }
+    
+    .contact-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .feedback-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 1rem;
+    }
+    
+    /* Footer - Status Bar Style */
+    .footer {
+        background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
+        border-top: 1px solid #555;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        color: #bbb;
+    }
+    
+    .status-left {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .status-right {
+        display: flex;
+        gap: 15px;
+    }
+    
+    /* Animations */
+    @keyframes typewriter {
+        to { opacity: 1; }
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+    
+    .cursor {
+        animation: blink 1s infinite;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
         .taskbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
-            border-bottom: 1px solid #666;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            padding: 0 10px;
         }
-
-        .taskbar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .taskbar-logo {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #ff6b35;
-        }
-
+        
         .taskbar-menu {
-            display: flex;
-            gap: 10px;
+            display: none;
         }
-
-        .taskbar-item {
-            padding: 5px 10px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .taskbar-item:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .taskbar-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 12px;
-        }
-
+        
         .system-info {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .page-counter {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255, 107, 53, 0.15);
-            border: 1px solid #ff6b35;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 11px;
-            color: #ff6b35;
-            font-weight: 500;
-        }
-
-        .page-counter-icon {
-            font-size: 10px;
-        }
-
-        .terminal-window {
-            margin-top: 50px;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-        }
-
-        .terminal-header {
-            background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
             gap: 10px;
-            border-bottom: 1px solid #555;
         }
-
-        .window-controls {
-            display: flex;
-            gap: 5px;
-        }
-
-        .control-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .close { background: #ff5555; }
-        .minimize { background: #ffaa00; }
-        .maximize { background: #00ff00; }
-
-        .terminal-title {
-            color: #e8e8e8;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .header {
-            padding: 3rem 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .terminal-content {
-            background: #0c0c0c;
-            padding: 20px;
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            text-align: left;
-        }
-
-        .terminal-line {
-            margin-bottom: 8px;
-            animation: typewriter 2s steps(50) forwards;
-            opacity: 0;
-        }
-
-        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
-        .terminal-line:nth-child(2) { animation-delay: 1s; }
-        .terminal-line:nth-child(3) { animation-delay: 1.5s; }
-        .terminal-line:nth-child(4) { animation-delay: 2s; }
-
-        .prompt {
-            color: #00ff00;
-        }
-
-        .command {
-            color: #87ceeb;
-        }
-
-        .output {
-            color: #ffa500;
-        }
-
-        .brand-info {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 800px;
-            backdrop-filter: blur(10px);
-        }
-
-        .main-title {
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 700;
-            color: #ff6b35;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-            font-family: 'Ubuntu', sans-serif;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #87ceeb;
-            margin-bottom: 1.5rem;
-            font-weight: 300;
-        }
-
+        
         .system-specs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 12px;
-            color: #bbb;
+            grid-template-columns: 1fr;
         }
-
-        .spec-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #333;
-        }
-
-        /* File Manager Style Projects Section */
-        .projects {
-            padding: 3rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .file-manager {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-        }
-
-        .file-manager-header {
-            background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #555;
-        }
-
-        .file-manager-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #e8e8e8;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .file-manager-nav {
-            background: #2a2a2a;
-            padding: 10px 15px;
-            border-bottom: 1px solid #444;
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 12px;
-            color: #87ceeb;
-        }
-
-        .file-list {
-            background: #0f0f0f;
-            padding: 20px;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #333;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .file-item:hover {
-            background: rgba(255,107,53,0.1);
-            border-color: #ff6b35;
-            transform: translateX(5px);
-        }
-
-        .file-icon {
-            font-size: 24px;
-            width: 30px;
-            text-align: center;
-        }
-
-        .file-info {
-            flex: 1;
-        }
-
-        .file-name {
-            font-size: 16px;
-            font-weight: 500;
-            color: #e8e8e8;
-            margin-bottom: 5px;
-        }
-
-        .file-description {
-            font-size: 14px;
-            color: #bbb;
-            line-height: 1.4;
-        }
-
-        .file-meta {
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 12px;
-            color: #888;
-            text-align: right;
-        }
-
-        .execute-btn {
-            background: linear-gradient(45deg, #ff6b35, #f7931e);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .execute-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255,107,53,0.3);
-        }
-
-        /* Contact Section - System Notification Style */
-        .contact {
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        .notification-panel {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 2rem;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-        }
-
-        .notification-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 2rem;
-            justify-content: center;
-        }
-
-        .notification-icon {
-            width: 24px;
-            height: 24px;
-            background: #ff6b35;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-        }
-
-        .contact-title {
-            font-size: 1.5rem;
-            color: #87ceeb;
-            font-weight: 500;
-        }
-
+        
         .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .contact-link {
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #444;
-            border-radius: 5px;
-            text-decoration: none;
-            color: #e8e8e8;
-            transition: all 0.3s ease;
-            font-size: 14px;
         }
-
-        .contact-link:hover {
-            background: rgba(255,107,53,0.1);
-            border-color: #ff6b35;
-            transform: translateY(-2px);
-        }
-
-        .contact-icon {
-            width: 16px;
-            height: 16px;
-        }
-
-        .feedback-list {
-            display: flex;
+        
+        .footer {
             flex-direction: column;
             gap: 10px;
-            margin-top: 1rem;
+            text-align: center;
         }
-
-        /* Footer - Status Bar Style */
-        .footer {
-            background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
-            border-top: 1px solid #555;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Ubuntu Mono', monospace;
-            font-size: 12px;
-            color: #bbb;
+        
+        .page-counter {
+            font-size: 10px;
+            padding: 3px 6px;
         }
+    }
+</style>
 
-        .status-left {
-            display: flex;
-            gap: 20px;
-        }
+<!-- Mobile Message (hidden by default) -->
+<div class="mobile-message" id="mobile-message">
+    <div class="emoji">🐧</div>
+    <h1>Linux Experience Ahead!</h1>
+    <p>This portfolio is designed for desktop and tablet viewing to provide the best Linux-inspired experience. Please switch to a larger device to explore my projects and skills.</p>
+    <p>In the meantime, you can check out my <a href="https://www.linkedin.com/in/kunalsaraswat" style="color: #ff6b35; text-decoration: underline;">LinkedIn profile</a> or contact me directly.</p>
+</div>
 
-        .status-right {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* Animations */
-        @keyframes typewriter {
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        .cursor {
-            animation: blink 1s infinite;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .taskbar {
-                padding: 0 10px;
-            }
-
-            .taskbar-menu {
-                display: none;
-            }
-
-            .system-info {
-                gap: 10px;
-            }
-
-            .system-specs {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-links {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .footer {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-
-            .page-counter {
-                font-size: 10px;
-                padding: 3px 6px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Linux-style taskbar -->
-    <div class="taskbar">
-        <div class="taskbar-left">
-            <div class="taskbar-logo">
-                🐧 Linux Projects Portfolio
-            </div>
+<!-- Linux-style taskbar -->
+<div class="taskbar">
+    <div class="taskbar-left">
+        <div class="taskbar-logo">
+            🐧 Linux Projects Portfolio
         </div>
-        <div class="taskbar-right">
-            <div class="system-info">
-                <div class="page-counter">
-                    <span class="page-counter-icon">👁️</span>
-                    <span>Views: <span id="page-views">0</span></span>
-                </div>
-                <span>🌐 WiFi</span>
-                <span>🔋 85%</span>
-                <span id="current-time">12:34</span>
+    </div>
+    <div class="taskbar-right">
+        <div class="system-info">
+            <div class="page-counter">
+                <span class="page-counter-icon">👁️</span>
+                <span>Views: <span id="page-views">0</span></span>
+            </div>
+            <span>🌐 WiFi</span>
+            <span>🔋 85%</span>
+            <span id="current-time">12:34</span>
+        </div>
+    </div>
+</div>
+
+<!-- Terminal Welcome Section -->
+<div class="header">
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <div class="window-controls">
+                <div class="control-btn close"></div>
+                <div class="control-btn minimize"></div>
+                <div class="control-btn maximize"></div>
+            </div>
+            <div class="terminal-title">kunal@linux: ~/portfolio</div>
+        </div>
+        <div class="terminal-content">
+            <div class="terminal-line">
+                <span class="prompt">kunal@linux:~$</span>
+                <span class="command">whoami</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">Kunal Saraswat - Linux & Open Source Toolkit Enthusiast</span>
+            </div>
+            <div class="terminal-line">
+                <span class="prompt">kunal@linux:~$</span>
+                <span class="command">cat mission.txt</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">Building powerful Linux tools and utilities to enhance developer productivity</span><span class="cursor">█</span>
             </div>
         </div>
     </div>
-
-    <!-- Terminal Welcome Section -->
-    <div class="header">
-        <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="window-controls">
-                    <div class="control-btn close"></div>
-                    <div class="control-btn minimize"></div>
-                    <div class="control-btn maximize"></div>
-                </div>
-                <div class="terminal-title">kunal@linux: ~/portfolio</div>
+    <div class="brand-info">
+        <h1 class="main-title">Kunal Saraswat</h1>
+        <p class="subtitle">🐧 Linux & Open Source Toolkit Enthusiast</p>
+        <div class="system-specs">
+            <div class="spec-line">
+                <span>OS:</span>
+                <span>Ubuntu 24.04 LTS</span>
             </div>
-            <div class="terminal-content">
-                <div class="terminal-line">
-                    <span class="prompt">kunal@linux:~$</span> <span class="command">whoami</span>
-                </div>
-                <div class="terminal-line">
-                    <span class="output">Kunal Saraswat - Linux & Open Source Toolkit Enthusiast</span>
-                </div>
-                <div class="terminal-line">
-                    <span class="prompt">kunal@linux:~$</span> <span class="command">cat mission.txt</span>
-                </div>
-                <div class="terminal-line">
-                    <span class="output">Building powerful Linux tools and utilities to enhance developer productivity</span><span class="cursor">█</span>
-                </div>
+            <div class="spec-line">
+                <span>Languages:</span>
+                <span>C, Python, Embedded C, Bash</span>
+            </div>
+            <div class="spec-line">
+                <span>Focus:</span>
+                <span>Linux Kernel, System Programming</span>
+            </div>
+            <div class="spec-line">
+                <span>Hobbies:</span>
+                <span>Continuous Learning</span>
+            </div>
+            <div class="spec-line">
+                <span>Experience:</span>
+                <span>5+ years</span>
+            </div>
+            <div class="spec-line">
+                <span>Status:</span>
+                <span style="color: #00ff00;">Online</span>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="brand-info">
-            <h1 class="main-title">Kunal Saraswat</h1>
-            <p class="subtitle">🐧 Linux & Open Source Toolkit Enthusiast</p>
-
-            <div class="system-specs">
-                <div class="spec-line">
-                    <span>OS:</span>
-                    <span>Ubuntu 24.04 LTS</span>
+<!-- File Manager Style Projects -->
+<section class="projects">
+    <div class="file-manager">
+        <div class="file-manager-header">
+            <div class="window-controls">
+                <div class="control-btn close"></div>
+                <div class="control-btn minimize"></div>
+                <div class="control-btn maximize"></div>
+            </div>
+            <div class="file-manager-title">
+                📁 Projects - File Manager
+            </div>
+        </div>
+        <div class="file-manager-nav">
+            /home/kunal/projects/linux-tools/
+        </div>
+        <div class="file-list">
+            <div class="file-item" onclick="window.open('https://linux-cmd-explorer-by-ks.netlify.app/', '_blank')">
+                <div class="file-icon">⚡</div>
+                <div class="file-info">
+                    <div class="file-name">linux-command-explorer</div>
+                    <div class="file-description">
+                        Interactive tool to explore and understand Linux commands with detailed explanations, usage examples, and related commands. Perfect for both beginners and experienced users.
+                    </div>
                 </div>
-                <div class="spec-line">
-                    <span>Languages:</span>
-                    <span>C, Python, Embedded C, Bash</span>
+                <div class="file-meta">
+                    <div>Type: Web App</div>
+                    <div>Size: 2.4 MB</div>
+                    <div>Version: 5.2</div>
+                    <div>Modified: 2025-06-07</div>
+                    <button class="execute-btn">Execute</button>
                 </div>
-                <div class="spec-line">
-                    <span>Focus:</span>
-                    <span>Linux Kernel, System Programming</span>
+            </div>
+            <div class="file-item" onclick="window.open('https://linux-kernel-master-tool-by-ks.netlify.app/', '_blank')">
+                <div class="file-icon">🔧</div>
+                <div class="file-info">
+                    <div class="file-name">linux-kernel-master</div>
+                    <div class="file-description">
+                        Comprehensive guide to Linux Kernel architecture, subsystems, and development workflows. Dive deep into kernel modules, system calls, and kernel module development techniques.
+                    </div>
                 </div>
-                <div class="spec-line">
-                    <span>Hobbies:</span>
-                    <span>Continuous Learning</span>
-                </div>
-                <div class="spec-line">
-                    <span>Experience:</span>
-                    <span>5+ years</span>
-                </div>
-                <div class="spec-line">
-                    <span>Status:</span>
-                    <span style="color: #00ff00;">Online</span>
+                <div class="file-meta">
+                    <div>Type: Web App</div>
+                    <div>Size: 5.1 MB</div>
+                    <div>Version: 3.1 </div>
+                    <div>Modified: 2025-06-10</div>
+                    <button class="execute-btn">Execute</button>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- File Manager Style Projects -->
-    <section class="projects">
-        <div class="file-manager">
-            <div class="file-manager-header">
-                <div class="window-controls">
-                    <div class="control-btn close"></div>
-                    <div class="control-btn minimize"></div>
-                    <div class="control-btn maximize"></div>
-                </div>
-                <div class="file-manager-title">
-                    📁 Projects - File Manager
-                </div>
-            </div>
-            <div class="file-manager-nav">
-                /home/kunal/projects/linux-tools/
-            </div>
-            <div class="file-list">
-                <div class="file-item" onclick="window.open('https://linux-cmd-explorer-by-ks.netlify.app/', '_blank')">
-                    <div class="file-icon">⚡</div>
-                    <div class="file-info">
-                        <div class="file-name">linux-command-explorer</div>
-                        <div class="file-description">
-                            Interactive tool to explore and understand Linux commands with detailed explanations,
-                            usage examples, and related commands. Perfect for both beginners and experienced users.
-                        </div>
-                    </div>
-                    <div class="file-meta">
-                        <div>Type: Web App</div>
-                        <div>Size: 2.4 MB</div>
-                        <div>Version: 5.2</div>
-                        <div>Modified: 2025-06-07</div>
-                        <button class="execute-btn">Execute</button>
-                    </div>
-                </div>
-
-                <div class="file-item" onclick="window.open('https://linux-kernel-master-tool-by-ks.netlify.app/', '_blank')">
-                    <div class="file-icon">🔧</div>
-                    <div class="file-info">
-                        <div class="file-name">linux-kernel-master</div>
-                        <div class="file-description">
-                            Comprehensive guide to Linux Kernel architecture, subsystems, and development workflows.
-                            Dive deep into kernel modules, system calls, and kernel module development techniques.
-                        </div>
-                    </div>
-                    <div class="file-meta">
-                        <div>Type: Web App</div>
-                        <div>Size: 5.1 MB</div>
-                        <div>Version: 3.1 </div>
-                        <div>Modified: 2025-06-10</div>
-                        <button class="execute-btn">Execute</button>
-                    </div>
-                </div>
+<!-- System Notification Style Contact -->
+<section class="contact">
+    <div class="notification-panel">
+        <div class="notification-header">
+            <div class="notification-icon">!</div>
+            <h2 class="contact-title">System Message: Connect with Developer</h2>
+        </div>
+        <div class="contact-links">
+            <a href="https://www.linkedin.com/in/kunalsaraswat" class="contact-link" target="_blank">
+                <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+                </svg>
+                LinkedIn
+            </a>
+            <div class="contact-link" onclick="showFeedbackList()">
+                <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
+                </svg>
+                Send Feedback
             </div>
         </div>
-    </section>
-
-    <!-- System Notification Style Contact -->
-    <section class="contact">
-        <div class="notification-panel">
-            <div class="notification-header">
-                <div class="notification-icon">!</div>
-                <h2 class="contact-title">System Message: Connect with Developer</h2>
-            </div>
-            <div class="contact-links">
-                <a href="https://www.linkedin.com/in/kunalsaraswat" class="contact-link" target="_blank">
-                    <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
-                    </svg>
-                    LinkedIn
-                </a>
-                <div class="contact-link" onclick="showFeedbackList()">
-                    <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
-                    </svg>
-                    Send Feedback
-                </div>
-            </div>
-            <div class="feedback-list" id="feedback-list" style="display: none;">
-                <a href="#" class="contact-link" onclick="sendFeedbackEmail('linux-tool')">Linux Command Explorer</a>
-                <a href="#" class="contact-link" onclick="sendFeedbackEmail('kernel-tool')">Linux Kernel Master Tool</a>
-                <a href="#" class="contact-link" onclick="sendFeedbackEmail('portfolio')">Portfolio Website</a>
-                <a href="#" class="contact-link" onclick="sendFeedbackEmail('other')">Other Project</a>
-            </div>
+        <div class="feedback-list" id="feedback-list" style="display: none;">
+            <a href="#" class="contact-link" onclick="sendFeedbackEmail('linux-tool')">Linux Command Explorer</a>
+            <a href="#" class="contact-link" onclick="sendFeedbackEmail('kernel-tool')">Linux Kernel Master Tool</a>
+            <a href="#" class="contact-link" onclick="sendFeedbackEmail('portfolio')">Portfolio Website</a>
+            <a href="#" class="contact-link" onclick="sendFeedbackEmail('other')">Other Project</a>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Status Bar Footer -->
-    <footer class="footer">
-        <div class="status-left">
-            <span>© 2025 Kunal Saraswat</span>
-            <span>Kernel: 5.15.0-generic</span>
-            <span>Tool Version: 6.3.0</span>
-        </div>
-        <div class="status-right">
-            <span id="uptime">Uptime: 0d 0h 0m</span>
-            <span id="memory">Mem: 0/0 MB</span>
-        </div>
-    </footer>
+<!-- Status Bar Footer -->
+<footer class="footer">
+    <div class="status-left">
+        <span>© 2025 Kunal Saraswat</span>
+        <span>Kernel: 5.15.0-generic</span>
+        <span>Tool Version: 6.3.0</span>
+    </div>
+    <div class="status-right">
+        <span id="uptime">Uptime: 3d 5m 10s</span>
+        <span id="memory">Mem: 0/0 MB</span>
+    </div>
+</footer>
 
-    <script>
-        // Page View Counter with Multiple Options
-        function initPageCounter() {
-            // Option 1: Use a free counter service (recommended for deployment)
-            initGlobalCounter();
-
-            // Option 2: Fallback to local storage for development/testing
-            // initLocalCounter();
+<script>
+    // Check if user is on mobile and show message if true
+    function checkMobileDevice() {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isTablet = /iPad|Android|Tablet/i.test(navigator.userAgent) && !/Mobile/i.test(navigator.userAgent);
+        
+        if (isMobile && !isTablet) {
+            document.getElementById('mobile-message').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
+    }
+    
+    // Run mobile check when page loads
+    window.addEventListener('load', checkMobileDevice);
 
-        // Global counter using a free service
-        function initGlobalCounter() {
-            try {
-                // Using CountAPI - a free, simple counter service
-                const counterUrl = 'https://api.countapi.xyz/hit/kunal-portfolio/views';
-
-                fetch(counterUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('page-views').textContent = data.value.toLocaleString();
-                        animateCounter();
-                    })
-                    .catch(error => {
-                        console.log('Counter service unavailable, using fallback');
-                        initLocalCounter();
-                    });
-            } catch (error) {
-                console.log('Error with global counter, using local fallback');
-                initLocalCounter();
-            }
+    // Page View Counter with Multiple Options
+    function initPageCounter() {
+        // Option 1: Use a free counter service (recommended for deployment)
+        initGlobalCounter();
+        
+        // Option 2: Fallback to local storage for development/testing
+        // initLocalCounter();
+    }
+    
+    // Global counter using a free service
+    function initGlobalCounter() {
+        try {
+            // Using CountAPI - a free, simple counter service
+            const counterUrl = 'https://api.countapi.xyz/hit/kunal-portfolio/views';
+            fetch(counterUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('page-views').textContent = data.value.toLocaleString();
+                    animateCounter();
+                })
+                .catch(error => {
+                    console.log('Counter service unavailable, using fallback');
+                    initLocalCounter();
+                });
+        } catch (error) {
+            console.log('Error with global counter, using local fallback');
+            initLocalCounter();
         }
-
-        // Local counter fallback (for development/testing)
-        function initLocalCounter() {
-            const pageViewsKey = 'kunal-portfolio-views';
-            let currentViews = parseInt(localStorage.getItem(pageViewsKey) || '0');
-
-            // Increment the counter
-            currentViews++;
-
-            // Store the new count
-            localStorage.setItem(pageViewsKey, currentViews.toString());
-
-            // Display the count
-            document.getElementById('page-views').textContent = currentViews.toLocaleString();
-            animateCounter();
+    }
+    
+    // Local counter fallback (for development/testing)
+    function initLocalCounter() {
+        const pageViewsKey = 'kunal-portfolio-views';
+        let currentViews = parseInt(localStorage.getItem(pageViewsKey) || '0');
+        
+        // Increment the counter
+        currentViews++;
+        
+        // Store the new count
+        localStorage.setItem(pageViewsKey, currentViews.toString());
+        
+        // Display the count
+        document.getElementById('page-views').textContent = currentViews.toLocaleString();
+        animateCounter();
+    }
+    
+    // Animation function
+    function animateCounter() {
+        const counterElement = document.querySelector('.page-counter');
+        counterElement.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            counterElement.style.transform = 'scale(1)';
+        }, 200);
+    }
+    
+    // Initialize page counter when page loads
+    window.addEventListener('load', initPageCounter);
+    
+    // Function to format uptime from seconds to days, hours, minutes, seconds
+    function formatUptime(totalSeconds) {
+        const days = Math.floor(totalSeconds / (24 * 3600));
+        const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = Math.floor(totalSeconds % 60);
+        
+        return `Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+    
+    // Start with 3 days, 5 minutes, and 10 seconds (in seconds)
+    let uptimeSeconds = (3 * 24 * 3600) + (5 * 60) + 10;
+    
+    // Update uptime every second
+    function updateUptime() {
+        uptimeSeconds++;
+        document.getElementById('uptime').textContent = formatUptime(uptimeSeconds);
+    }
+    
+    // Update memory usage (using performance.memory if available)
+    function updateMemory() {
+        let memoryInfo = 'Mem: Unknown';
+        if (window.performance && window.performance.memory) {
+            const used = (window.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1);
+            const total = (window.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1);
+            memoryInfo = `Mem: ${used}/${total} MB`;
+        } else {
+            // Fallback for browsers without performance.memory
+            memoryInfo = `Mem: 4.2/8.0 GB`; // Placeholder
         }
-
-        // Animation function
-        function animateCounter() {
-            const counterElement = document.querySelector('.page-counter');
-            counterElement.style.transform = 'scale(1.05)';
-            setTimeout(() => {
-                counterElement.style.transform = 'scale(1)';
-            }, 200);
-        }
-
-        // Initialize page counter when page loads
-        window.addEventListener('load', initPageCounter);
-
-        // Function to format uptime from milliseconds to days, hours, minutes
-        function formatUptime(ms) {
-            const seconds = Math.floor(ms / 1000);
-            const days = Math.floor(seconds / (24 * 3600));
-            const hours = Math.floor((seconds % (24 * 3600)) / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            return `Uptime: ${days}d ${hours}h ${minutes}m`;
-        }
-
-        // Start time for uptime calculation (simulating tool start time)
-        const startTime = Date.now();
-
-        // Update uptime every minute
-        function updateUptime() {
-            const uptime = Date.now() - startTime;
-            document.getElementById('uptime').textContent = formatUptime(uptime);
-        }
-
-        // Update memory usage (using performance.memory if available)
-        function updateMemory() {
-            let memoryInfo = 'Mem: Unknown';
-            if (window.performance && window.performance.memory) {
-                const used = (window.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1);
-                const total = (window.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1);
-                memoryInfo = `Mem: ${used}/${total} MB`;
-            } else {
-                // Fallback for browsers without performance.memory
-                memoryInfo = `Mem: 4.2/8.0 GB`; // Placeholder
-            }
-            document.getElementById('memory').textContent = memoryInfo;
-        }
-
-        // Update time in taskbar
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        // Initial updates
-        updateUptime();
-        updateMemory();
-        updateTime();
-
-        // Update every minute
-        setInterval(() => {
-            updateUptime();
-            updateMemory();
-        }, 60000);
-
-        setInterval(updateTime, 1000);
-
-        // Feedback email function
-        function sendFeedbackEmail(projectKey) {
-            const projects = {
-                'linux-tool': 'Linux Command Explorer',
-                'kernel-tool': 'Linux Kernel Master Tool',
-                'portfolio': 'Portfolio Website',
-                'other': 'Other Project'
-            };
-
-            const projectName = projects[projectKey] || projects['other'];
-
-            let subject, body;
-
-            if (projectKey === 'linux-tool' || projectKey === 'kernel-tool') {
-                subject = `${projectName} Feedback! 🐧`;
-                body = `Hey Kunal,%0D%0A%0D%0AI'm using your ${projectName} and wanted to share some thoughts:%0D%0A%0D%0A🚀 My favorite features:%0D%0A💡 Suggestions for improvement:%0D%0A🐞 Any issues encountered:%0D%0A%0D%0AAdditional notes:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
-            } else if (projectKey === 'portfolio') {
-                subject = `${projectName} Feedback! ✨`;
-                body = `Hey Kunal,%0D%0A%0D%0AYour ${projectName} looks great! Here's my feedback:%0D%0A%0D%0A👍 What I love:%0D%0A💡 Suggestions for improvement:%0D%0A🔍 Any issues I noticed:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
-            } else {
-                subject = `Feedback about ${projectName}`;
-                body = `Hey Kunal,%0D%0A%0D%0AI wanted to share some feedback about ${projectName}:%0D%0A%0D%0AWhat I liked:%0D%0ASuggestions:%0D%0AOther comments:%0D%0A%0D%0ARegards,%0D%0A[Your Name]`;
-            }
-
-            window.open(
-                `https://mail.google.com/mail/?view=cm&fs=1&to=kunalsaraswat@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`,
-                '_blank'
-            );
-        }
-
-        // Toggle feedback list visibility
-        function showFeedbackList() {
-            const feedbackList = document.getElementById('feedback-list');
-            feedbackList.style.display = feedbackList.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        // Add click sound effect (optional)
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('file-item') || e.target.classList.contains('execute-btn')) {
-                // Could add a subtle click sound here
-            }
+        document.getElementById('memory').textContent = memoryInfo;
+    }
+    
+    // Update time in taskbar
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit'
         });
-    </script>
-</body>
-</html>
+        document.getElementById('current-time').textContent = timeString;
+    }
+    
+    // Initial updates
+    updateUptime();
+    updateMemory();
+    updateTime();
+    
+    // Update every second
+    setInterval(updateUptime, 1000);
+    setInterval(updateMemory, 60000); // Update memory every minute
+    setInterval(updateTime, 1000);
+    
+    // Feedback email function
+    function sendFeedbackEmail(projectKey) {
+        const projects = {
+            'linux-tool': 'Linux Command Explorer',
+            'kernel-tool': 'Linux Kernel Master Tool',
+            'portfolio': 'Portfolio Website',
+            'other': 'Other Project'
+        };
+        
+        const projectName = projects[projectKey] || projects['other'];
+        let subject, body;
+        
+        if (projectKey === 'linux-tool' || projectKey === 'kernel-tool') {
+            subject = `${projectName} Feedback! 🐧`;
+            body = `Hey Kunal,%0D%0A%0D%0AI'm using your ${projectName} and wanted to share some thoughts:%0D%0A%0D%0A🚀 My favorite features:%0D%0A💡 Suggestions for improvement:%0D%0A🐞 Any issues encountered:%0D%0A%0D%0AAdditional notes:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+        } else if (projectKey === 'portfolio') {
+            subject = `${projectName} Feedback! ✨`;
+            body = `Hey Kunal,%0D%0A%0D%0AYour ${projectName} looks great! Here's my feedback:%0D%0A%0D%0A👍 What I love:%0D%0A💡 Suggestions for improvement:%0D%0A🔍 Any issues I noticed:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+        } else {
+            subject = `Feedback about ${projectName}`;
+            body = `Hey Kunal,%0D%0A%0D%0AI wanted to share some feedback about ${projectName}:%0D%0A%0D%0AWhat I liked:%0D%0ASuggestions:%0D%0AOther comments:%0D%0A%0D%0ARegards,%0D%0A[Your Name]`;
+        }
+        
+        window.open(
+            `https://mail.google.com/mail/?view=cm&fs=1&to=kunalsaraswat@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`,
+            '_blank'
+        );
+    }
+    
+    // Toggle feedback list visibility
+    function showFeedbackList() {
+        const feedbackList = document.getElementById('feedback-list');
+        feedbackList.style.display = feedbackList.style.display === 'none' ? 'flex' : 'none';
+    }
+    
+    // Add click sound effect (optional)
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('file-item') || e.target.classList.contains('execute-btn')) {
+            // Could add a subtle click sound here
+        }
+    });
+</script>
