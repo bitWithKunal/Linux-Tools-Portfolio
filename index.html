@@ -561,18 +561,20 @@
         <div class="taskbar-logo">
             🐧 Linux Projects Portfolio
         </div>
-   
-<div class="taskbar-right">
-    <div class="system-info">
-        <div class="page-counter">
-            <span class="page-counter-icon">👁️</span>
-            <span>Views: <span id="page-views">0</span></span>
+    </div>
+    <div class="taskbar-right">
+        <div class="system-info">
+            <div class="page-counter">
+                <span class="page-counter-icon">👁️</span>
+                <span>Views: <span id="page-views">0</span></span>
+            </div>
+            <span>🌐 WiFi</span>
+            <span>🔋 85%</span>
+            <span id="current-time">12:34</span>
         </div>
-        <span>🌐 WiFi</span>
-        <span id="battery-status">🔋 85%</span> <!-- Added ID for dynamic updates -->
-        <span id="current-time">12:34</span>
     </div>
 </div>
+
 <!-- Terminal Welcome Section -->
 <div class="header">
     <div class="terminal-window">
@@ -864,42 +866,6 @@
             'portfolio': 'Portfolio Website',
             'other': 'Other Project'
         };
-
-// Function to update battery status
-function updateBatteryStatus() {
-    const batteryElement = document.getElementById('battery-status');
-    
-    if (navigator.getBattery) {
-        navigator.getBattery().then(battery => {
-            // Function to update the battery display
-            function updateBattery() {
-                const level = Math.round(battery.level * 100); // Convert to percentage
-                const isCharging = battery.charging;
-                const emoji = isCharging ? '⚡️' : '🔋';
-                batteryElement.textContent = `${emoji} ${level}%`;
-            }
-            
-            // Initial update
-            updateBattery();
-            
-            // Update when battery level or charging status changes
-            battery.addEventListener('levelchange', updateBattery);
-            battery.addEventListener('chargingchange', updateBattery);
-        }).catch(error => {
-            console.error('Battery API error:', error);
-            batteryElement.textContent = '🔋 Unknown';
-        });
-    } else {
-        // Fallback for browsers without Battery API
-        batteryElement.textContent = '🔋 Unknown';
-    }
-}
-
-// Initial battery update
-updateBatteryStatus();
-
-// Update battery every 5 minutes (to avoid excessive calls)
-setInterval(updateBatteryStatus, 300000);
         
         const projectName = projects[projectKey] || projects['other'];
         let subject, body;
