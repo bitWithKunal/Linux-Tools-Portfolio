@@ -1,943 +1,1482 @@
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kunal Saraswat | Linux Developer</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500;700&display=swap');
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Ubuntu', sans-serif;
-        background: linear-gradient(135deg, #2c1810 0%, #1a1a1a 25%, #0f0f0f 100%);
-        color: #e8e8e8;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
-
-    /* Mobile message styling */
-    .mobile-message {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #0f0f0f;
-        z-index: 9999;
-        padding: 2rem;
-        text-align: center;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .mobile-message h1 {
-        color: #ff6b35;
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .mobile-message p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        max-width: 600px;
-        line-height: 1.6;
-    }
-
-    .mobile-message .emoji {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-        animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
-    }
-
-    /* Linux-style taskbar */
-    .taskbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 40px;
-        background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
-        border-bottom: 1px solid #666;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 15px;
-        z-index: 1000;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    .taskbar-left {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .taskbar-logo {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 14px;
-        font-weight: 700;
-        color: #ff6b35;
-    }
-
-    .taskbar-menu {
-        display: flex;
-        gap: 10px;
-    }
-
-    .taskbar-item {
-        padding: 5px 10px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 3px;
-        font-size: 12px;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .taskbar-item:hover {
-        background: rgba(255,255,255,0.2);
-    }
-
-    .taskbar-right {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        font-size: 12px;
-    }
-
-    .system-info {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-    }
-
-    .page-counter {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        background: rgba(255, 107, 53, 0.15);
-        border: 1px solid #ff6b35;
-        border-radius: 4px;
-        padding: 4px 8px;
-        font-family: 'Ubuntu Mono', monospace;
-        font-size: 11px;
-        color: #ff6b35;
-        font-weight: 500;
-    }
-
-    .page-counter-icon {
-        font-size: 10px;
-    }
-
-    .terminal-window {
-        margin-top: 50px;
-        background: #1a1a1a;
-        border: 1px solid #444;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-    }
-
-    .terminal-header {
-        background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
-        padding: 8px 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-bottom: 1px solid #555;
-    }
-
-    .window-controls {
-        display: flex;
-        gap: 5px;
-    }
-
-    .control-btn {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    .close {
-        background: #ff5555;
-    }
-
-    .minimize {
-        background: #ffaa00;
-    }
-
-    .maximize {
-        background: #00ff00;
-    }
-
-    .terminal-title {
-        color: #e8e8e8;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .header {
-        padding: 3rem 2rem;
-        text-align: center;
-        position: relative;
-    }
-
-    .terminal-content {
-        background: #0c0c0c;
-        padding: 20px;
-        font-family: 'Ubuntu Mono', monospace;
-        font-size: 14px;
-        line-height: 1.6;
-        text-align: left;
-    }
-
-    .terminal-line {
-        margin-bottom: 8px;
-        animation: typewriter 2s steps(50) forwards;
-        opacity: 0;
-    }
-
-    .terminal-line:nth-child(1) {
-        animation-delay: 0.5s;
-    }
-
-    .terminal-line:nth-child(2) {
-        animation-delay: 1s;
-    }
-
-    .terminal-line:nth-child(3) {
-        animation-delay: 1.5s;
-    }
-
-    .terminal-line:nth-child(4) {
-        animation-delay: 2s;
-    }
-
-    .prompt {
-        color: #00ff00;
-    }
-
-    .command {
-        color: #87ceeb;
-    }
-
-    .output {
-        color: #ffa500;
-    }
-
-    .brand-info {
-        background: rgba(0,0,0,0.7);
-        border: 1px solid #444;
-        border-radius: 8px;
-        padding: 2rem;
-        margin: 2rem auto;
-        max-width: 800px;
-        backdrop-filter: blur(10px);
-    }
-
-    .main-title {
-        font-size: clamp(2rem, 6vw, 3.5rem);
-        font-weight: 700;
-        color: #ff6b35;
-        margin-bottom: 1rem;
-        text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-        font-family: 'Ubuntu', sans-serif;
-    }
-
-    .subtitle {
-        font-size: 1.2rem;
-        color: #87ceeb;
-        margin-bottom: 1.5rem;
-        font-weight: 300;
-    }
-
-    .system-specs {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 10px;
-        font-family: 'Ubuntu Mono', monospace;
-        font-size: 12px;
-        color: #bbb;
-    }
-
-    .spec-line {
-        display: flex;
-        justify-content: space-between;
-        padding: 5px 0;
-        border-bottom: 1px solid #333;
-    }
-
-    /* File Manager Style Projects Section */
-    .projects {
-        padding: 3rem 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .file-manager {
-        background: #1a1a1a;
-        border: 1px solid #444;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-    }
-
-    .file-manager-header {
-        background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
-        padding: 8px 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #555;
-    }
-
-    .file-manager-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #e8e8e8;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .file-manager-nav {
-        background: #2a2a2a;
-        padding: 10px 15px;
-        border-bottom: 1px solid #444;
-        font-family: 'Ubuntu Mono', monospace;
-        font-size: 12px;
-        color: #87ceeb;
-    }
-
-    .file-list {
-        background: #0f0f0f;
-        padding: 20px;
-    }
-
-    .file-item {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 15px;
-        margin-bottom: 10px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid #333;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-
-    .file-item:hover {
-        background: rgba(255,107,53,0.1);
-        border-color: #ff6b35;
-        transform: translateX(5px);
-    }
-
-    .file-icon {
-        font-size: 24px;
-        width: 30px;
-        text-align: center;
-    }
-
-    .file-info {
-        flex: 1;
-    }
-
-    .file-name {
-        font-size: 16px;
-        font-weight: 500;
-        color: #e8e8e8;
-        margin-bottom: 5px;
-    }
-
-    .file-description {
-        font-size: 14px;
-        color: #bbb;
-        line-height: 1.4;
-    }
-
-    .file-meta {
-        font-family: 'Ubuntu Mono', monospace;
-        font-size: 12px;
-        color: #888;
-        text-align: right;
-    }
-
-    .execute-btn {
-        background: linear-gradient(45deg, #ff6b35, #f7931e);
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
-
-    .execute-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 15px rgba(255,107,53,0.3);
-    }
-
-    /* Contact Section - System Notification Style */
-    .contact {
-        padding: 3rem 2rem;
-        text-align: center;
-    }
-
-    .notification-panel {
-        background: #1a1a1a;
-        border: 1px solid #444;
-        border-radius: 8px;
-        padding: 2rem;
-        max-width: 600px;
-        margin: 0 auto;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-    }
-
-    .notification-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 2rem;
-        justify-content: center;
-    }
-
-    .notification-icon {
-        width: 24px;
-        height: 24px;
-        background: #ff6b35;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 12px;
-    }
-
-    .contact-title {
-        font-size: 1.5rem;
-        color: #87ceeb;
-        font-weight: 500;
-    }
-
-    .contact-links {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    .contact-link {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid #444;
-        border-radius: 5px;
-        text-decoration: none;
-        color: #e8e8e8;
-        transition: all 0.3s ease;
-        font-size: 14px;
-    }
-
-    .contact-link:hover {
-        background: rgba(255,107,53,0.1);
-        border-color: #ff6b35;
-        transform: translateY(-2px);
-    }
-
-    .contact-icon {
-        width: 16px;
-        height: 16px;
-    }
-
-    .feedback-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 1rem;
-    }
-
-    /* Footer - Status Bar Style */
-    .footer {
-        background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
-        border-top: 1px solid #555;
-        padding: 10px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-family: 'Ubuntu Mono', monospace;
-        font-size: 12px;
-        color: #bbb;
-    }
-
-    .status-left {
-        display: flex;
-        gap: 20px;
-    }
-
-    .status-right {
-        display: flex;
-        gap: 15px;
-    }
-
-    /* Animations */
-    @keyframes typewriter {
-        to { opacity: 1; }
-    }
-
-    @keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0; }
-    }
-
-    .cursor {
-        animation: blink 1s infinite;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .taskbar {
-            padding: 0 10px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kunal Saraswat | Linux Systems Developer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500;700&family=Fira+Code:wght@300;400;500;600&display=swap');
+
+        :root {
+            --primary-orange: #E95420;
+            --secondary-orange: #FF6B35;
+            --ubuntu-purple: #77216F;
+            --redhat-red: #EE0000;
+            --terminal-green: #00FF41;
+            --terminal-blue: #0099FF;
+            --warning-yellow: #FFD700;
+            --pure-black: #000000;
+            --dark-black: #0A0A0A;
+            --light-black: #1A1A1A;
+            --grey-black: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B3B3B3;
+            --text-muted: #666666;
+            --border-color: #333333;
+            --success-green: #4CAF50;
+            --shadow-dark: rgba(0, 0, 0, 0.8);
+            --shadow-glow: rgba(233, 84, 32, 0.3);
         }
 
-        .taskbar-menu {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, var(--pure-black) 0%, var(--dark-black) 50%, var(--light-black) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(233, 84, 32, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(233, 84, 32, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Mobile message styling */
+        .mobile-message {
             display: none;
-        }
-
-        .system-info {
-            gap: 10px;
-        }
-
-        .system-specs {
-            grid-template-columns: 1fr;
-        }
-
-        .contact-links {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--pure-black);
+            z-index: 9999;
+            padding: 2rem;
+            text-align: center;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
         }
 
-        .footer {
-            flex-direction: column;
-            gap: 10px;
-            text-align: center;
+        .mobile-message h1 {
+            color: var(--primary-orange);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px var(--shadow-glow);
+        }
+
+        .mobile-message p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .mobile-message .emoji {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* Ubuntu-style taskbar */
+        .taskbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: linear-gradient(to bottom, var(--grey-black), var(--dark-black));
+            border-bottom: 2px solid var(--primary-orange);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px var(--shadow-dark);
+            backdrop-filter: blur(10px);
+        }
+
+        .taskbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .taskbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            text-shadow: 0 0 10px var(--shadow-glow);
+        }
+
+        .taskbar-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .taskbar-item {
+            padding: 8px 16px;
+            background: rgba(233, 84, 32, 0.1);
+            border: 1px solid var(--primary-orange);
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .taskbar-item:hover {
+            background: var(--primary-orange);
+            box-shadow: 0 0 15px var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .taskbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .system-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
 
         .page-counter {
-            font-size: 10px;
-            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px var(--shadow-glow);
         }
-    }
-</style>
 
-<!-- Mobile Message (hidden by default) -->
-<div class="mobile-message" id="mobile-message">
-    <div class="emoji">🐧</div>
-    <h1>Linux Experience Ahead!</h1>
-    <p>This portfolio is designed for desktop and tablet viewing to provide the best Linux-inspired experience. Please switch to a larger device to explore my projects and skills.</p>
-    <p>In the meantime, you can check out my <a href="https://www.linkedin.com/in/kunalsaraswat" style="color: #ff6b35; text-decoration: underline;">LinkedIn profile</a> or contact me directly on mail ✉️ - kunalsaraswat30@gmail.com.</p>
-</div>
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success-green);
+            border-radius: 4px;
+            color: var(--success-green);
+        }
 
-<!-- Linux-style taskbar -->
-<div class="taskbar">
-    <div class="taskbar-left">
-        <div class="taskbar-logo">
-            🐧 Linux Projects Portfolio
+        /* Terminal Welcome Section */
+        .header {
+            margin-top: 60px;
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .terminal-window {
+            background: var(--pure-black);
+            border: 2px solid var(--primary-orange);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px var(--shadow-dark), 0 0 50px var(--shadow-glow);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .terminal-header {
+            background: linear-gradient(135deg, var(--grey-black), var(--light-black));
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--primary-orange);
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .control-btn {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close { background: var(--redhat-red); }
+        .minimize { background: var(--warning-yellow); }
+        .maximize { background: var(--success-green); }
+
+        .control-btn:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .terminal-title {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Ubuntu Mono', monospace;
+        }
+
+        .terminal-content {
+            background: var(--pure-black);
+            padding: 30px;
+            font-family: 'Fira Code', monospace;
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .terminal-line {
+            margin-bottom: 12px;
+            animation: typewriter 2s steps(50) forwards;
+            opacity: 0;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(2) { animation-delay: 1s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.5s; }
+        .terminal-line:nth-child(4) { animation-delay: 2s; }
+
+        .prompt { color: var(--terminal-green); font-weight: 600; }
+        .command { color: var(--terminal-blue); font-weight: 500; }
+        .output { color: var(--primary-orange); }
+
+        .brand-info {
+            background: linear-gradient(135deg, var(--dark-black), var(--light-black));
+            border: 2px solid var(--primary-orange);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem auto;
+            max-width: 900px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px var(--shadow-dark), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px var(--shadow-glow);
+            font-family: 'Ubuntu', sans-serif;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--terminal-blue);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .system-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .spec-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .spec-line:hover {
+            color: var(--primary-orange);
+            border-color: var(--primary-orange);
+        }
+
+        /* Enhanced Projects Section */
+        .projects {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .projects-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .projects-title {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .projects-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .file-manager {
+            background: var(--pure-black);
+            border: 2px solid var(--primary-orange);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px var(--shadow-dark), 0 0 100px var(--shadow-glow);
+        }
+
+        .file-manager-header {
+            background: linear-gradient(135deg, var(--grey-black), var(--light-black));
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--primary-orange);
+        }
+
+        .file-manager-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .file-manager-nav {
+            background: var(--dark-black);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-color);
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            color: var(--terminal-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-path {
+            color: var(--primary-orange);
+            font-weight: 600;
+        }
+
+        .file-list {
+            background: var(--pure-black);
+            padding: 30px;
+            display: grid;
+            gap: 25px;
+        }
+
+        .file-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--dark-black), var(--light-black));
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(233, 84, 32, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .file-item:hover::before {
+            left: 100%;
+        }
+
+        .file-item:hover {
+            border-color: var(--primary-orange);
+            background: linear-gradient(135deg, rgba(233, 84, 32, 0.05), var(--light-black));
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px var(--shadow-dark), 0 0 30px var(--shadow-glow);
+        }
+
+        .file-icon {
+            font-size: 48px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 8px 20px var(--shadow-glow);
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover .file-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 30px var(--shadow-glow);
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-family: 'Ubuntu Mono', monospace;
+        }
+
+        .file-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .file-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background: rgba(233, 84, 32, 0.2);
+            color: var(--primary-orange);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--primary-orange);
+        }
+
+        .file-stats {
+            display: flex;
+            gap: 20px;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+            min-width: 200px;
+        }
+
+        .meta-info {
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        .execute-btn {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px var(--shadow-glow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .execute-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px var(--shadow-glow);
+        }
+
+        .execute-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .notification-panel {
+            background: linear-gradient(135deg, var(--dark-black), var(--light-black));
+            border: 2px solid var(--primary-orange);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 25px 50px var(--shadow-dark), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .notification-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px var(--shadow-glow);
+        }
+
+        .contact-title {
+            font-size: 1.8rem;
+            color: var(--terminal-blue);
+            font-weight: 600;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: rgba(233, 84, 32, 0.1);
+            border: 2px solid var(--primary-orange);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .contact-link:hover {
+            background: var(--primary-orange);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px var(--shadow-glow);
+        }
+
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--grey-black), var(--dark-black));
+            border-top: 2px solid var(--primary-orange);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .status-left, .status-right {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Animations */
+        @keyframes typewriter {
+            to { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+            color: var(--terminal-green);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .taskbar {
+                padding: 0 15px;
+            }
+
+            .taskbar-menu {
+                display: none;
+            }
+
+            .system-info {
+                gap: 15px;
+            }
+
+            .system-specs {
+                grid-template-columns: 1fr;
+            }
+
+            .file-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .file-meta {
+                align-items: center;
+                min-width: auto;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .projects-title {
+                font-size: 2rem;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-message {
+                display: flex !important;
+            }
+
+            body {
+                overflow: hidden;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-orange);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Message -->
+    <div class="mobile-message" id="mobile-message">
+        <div class="emoji">🐧</div>
+        <h1>Linux Experience Optimized for Desktop!</h1>
+        <p>This portfolio showcases advanced Linux development tools and is optimized for desktop and tablet viewing. Please switch to a larger device for the complete experience.</p>
+        <p>Connect with me on <a href="https://www.linkedin.com/in/kunalsaraswat" style="color: var(--primary-orange); text-decoration: underline;">LinkedIn</a> or email me at <strong>kunalsaraswat30@gmail.com</strong></p>
+    </div>
+
+    <!-- Enhanced Ubuntu-style Taskbar -->
+    <div class="taskbar">
+        <div class="taskbar-left">
+            <div class="taskbar-logo">
+                🐧 Linux Systems Portfolio
+            </div>
+        </div>
+        <div class="taskbar-right">
+            <div class="system-info">
+                <div class="page-counter">
+                    <span>👁️</span>
+                    <span>Views: <span id="page-views">0</span></span>
+                </div>
+                <div class="status-indicator">
+                    <span>🌐</span>
+                    <span>Connected</span>
+                </div>
+                <span id="battery-status">🔋 85%</span>
+                <span id="current-time">12:34</span>
+            </div>
         </div>
     </div>
-    <div class="taskbar-right">
-        <div class="system-info">
-            <div class="page-counter">
-                <span class="page-counter-icon">👁️</span>
-                <span>Views: <span id="page-views">0</span></span>
-            </div>
-            <span>🌐 WiFi</span>
-            <span id="battery-status">🔋 85%</span>
-            <span id="current-time">12:34</span>
-        </div>
-    </div>
-</div>
 
-<!-- Terminal Welcome Section -->
-<div class="header">
-    <div class="terminal-window">
-        <div class="terminal-header">
-            <div class="window-controls">
-                <div class="control-btn close"></div>
-                <div class="control-btn minimize"></div>
-                <div class="control-btn maximize"></div>
+    <!-- Enhanced Terminal Welcome -->
+    <div class="header">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="window-controls">
+                    <div class="control-btn close"></div>
+                    <div class="control-btn minimize"></div>
+                    <div class="control-btn maximize"></div>
+                </div>
+                <div class="terminal-title">kunal@ubuntu-dev: ~/linux-projects</div>
             </div>
-            <div class="terminal-title">kunal@linux: ~/portfolio</div>
-        </div>
-        <div class="terminal-content">
-            <div class="terminal-line">
-                <span class="prompt">kunal@linux:~$</span>
-                <span class="command">whoami</span>
-            </div>
-            <div class="terminal-line">
-                <span class="output">Kunal Saraswat - Linux & Open Source Toolkit Enthusiast</span>
-            </div>
-            <div class="terminal-line">
-                <span class="prompt">kunal@linux:~$</span>
-                <span class="command">cat mission.txt</span>
-            </div>
-            <div class="terminal-line">
-                <span class="output">Building powerful Linux tools and utilities to enhance developer productivity</span><span class="cursor">█</span>
-            </div>
-        </div>
-    </div>
-    <div class="brand-info">
-        <h1 class="main-title">Kunal Saraswat</h1>
-        <p class="subtitle">🐧 Linux & Open Source Toolkit Enthusiast</p>
-        <div class="system-specs">
-            <div class="spec-line">
-                <span>OS:</span>
-                <span>Ubuntu 24.04 LTS</span>
-            </div>
-            <div class="spec-line">
-                <span>Languages:</span>
-                <span>C, Python, Embedded C, Bash</span>
-            </div>
-            <div class="spec-line">
-                <span>Focus:</span>
-                <span>Linux Kernel, System Programming</span>
-            </div>
-            <div class="spec-line">
-                <span>Hobbies:</span>
-                <span>Continuous Learning</span>
-            </div>
-            <div class="spec-line">
-                <span>Experience:</span>
-                <span>5+ years</span>
-            </div>
-            <div class="spec-line">
-                <span>Status:</span>
-                <span style="color: #00ff00;">Online</span>
+            <div class="terminal-content">
+                <div class="terminal-line">
+                    <span class="prompt">kunal@ubuntu-dev:~$</span>
+                    <span class="command"> whoami</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Kunal Saraswat - Linux Systems Developer & Open Source Enthusiast</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">kunal@ubuntu-dev:~$</span>
+                    <span class="command"> cat ~/.mission</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Crafting powerful Linux tools and system utilities to enhance developer productivity and system administration</span><span class="cursor">█</span>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- File Manager Style Projects -->
-<section class="projects">
-    <div class="file-manager">
-        <div class="file-manager-header">
-            <div class="window-controls">
-                <div class="control-btn close"></div>
-                <div class="control-btn minimize"></div>
-                <div class="control-btn maximize"></div>
-            </div>
-            <div class="file-manager-title">
-                📁 Projects - File Manager
+        <div class="brand-info">
+            <h1 class="main-title">Kunal Saraswat</h1>
+            <p class="subtitle">🐧 Linux Systems Developer & Open Source Advocate</p>
+            <div class="system-specs">
+                <div class="spec-line">
+                    <span><strong>Primary OS:</strong></span>
+                    <span>Ubuntu 24.04 LTS (Noble Numbat)</span>
+                </div>
+                <div class="spec-line">
+                    <span><strong>Languages:</strong></span>
+                    <span>C, Python, Bash, Embedded C</span>
+                </div>
+                <div class="spec-line">
+                    <span><strong>Specialization:</strong></span>
+                    <span>Linux Kernel, System Programming</span>
+                </div>
+                <div class="spec-line">
+                    <span><strong>Tools:</strong></span>
+                    <span>GCC, GDB, Valgrind, Vim, Git</span>
+                </div>
+                <div class="spec-line">
+                    <span><strong>Experience:</strong></span>
+                    <span>5+ years in Linux Development</span>
+                </div>
+                <div class="spec-line">
+                    <span><strong>Status:</strong></span>
+                    <span style="color: var(--success-green); font-weight: 600;">● Online & Available</span>
+                </div>
             </div>
         </div>
-        <div class="file-manager-nav">
-            /home/kunal/projects/linux-tools/
+    </div>
+
+    <!-- Enhanced Projects Section -->
+    <section class="projects">
+        <div class="projects-header">
+            <h2 class="projects-title">~/projects</h2>
+            <p class="projects-subtitle">Professional Linux development tools and utilities designed for system administrators, developers, and Linux enthusiasts</p>
         </div>
-        <div class="file-list">
-            <div class="file-item" onclick="window.open('https://linux-cmd-explorer-by-ks.netlify.app/', '_blank')">
-                <div class="file-icon">⚡</div>
-                <div class="file-info">
-                    <div class="file-name">linux-command-explorer</div>
-                    <div class="file-description">
-                        Interactive tool to explore and understand Linux commands with detailed explanations, usage examples, and related commands. Perfect for both beginners and experienced users.
+
+        <div class="file-manager">
+            <div class="file-manager-header">
+                <div class="window-controls">
+                    <div class="control-btn close"></div>
+                    <div class="control-btn minimize"></div>
+                    <div class="control-btn maximize"></div>
+                </div>
+                <div class="file-manager-title">
+                    📁 Project Repository - File Manager
+                </div>
+            </div>
+            <div class="file-manager-nav">
+                <span>📍</span>
+                <span class="nav-path">/home/kunal/projects/linux-development-tools/</span>
+                <span style="margin-left: auto; color: var(--success-green);">● 3 projects available</span>
+            </div>
+            <div class="file-list">
+
+                <!-- Project 1: Linux Command Explorer -->
+                <div class="file-item" onclick="window.open('https://linux-cmd-explorer-by-ks.netlify.app/', '_blank')">
+                    <div class="file-icon">⚡</div>
+                    <div class="file-info">
+                        <div class="file-name">linux-command-explorer</div>
+                        <div class="file-description">
+                            A comprehensive interactive platform for mastering Linux commands. Features detailed command explanations, practical examples, usage patterns, and related command suggestions. Includes advanced search functionality, command categorization, and real-world use cases perfect for both system administrators and developers.
+                        </div>
+                    </div>
+                    <div class="file-meta">
+                        <div class="meta-info">
+                            <div><strong>Type:</strong> Progressive Web App</div>
+                            <div><strong>Size:</strong> 2.4 MB</div>
+                            <div><strong>Version:</strong> v5.2.1</div>
+                            <div><strong>Last Updated:</strong> 2025-06-07</div>
+                            <div><strong>Status:</strong> <span style="color: var(--success-green);">Production Ready</span></div>
+                        </div>
+                        <button class="execute-btn">
+                            <span>🚀</span>
+                            <span>Launch Tool</span>
+                        </button>
                     </div>
                 </div>
-                <div class="file-meta">
-                    <div>Type: Web App</div>
-                    <div>Size: 2.4 MB</div>
-                    <div>Version: 5.2</div>
-                    <div>Modified: 2025-06-07</div>
-                    <button class="execute-btn">Execute</button>
-                </div>
-            </div>
-            <div class="file-item" onclick="window.open('https://linux-kernel-master-tool-by-ks.netlify.app/', '_blank')">
-                <div class="file-icon">🔧</div>
-                <div class="file-info">
-                    <div class="file-name">linux-kernel-master</div>
-                    <div class="file-description">
-                        Comprehensive guide to Linux Kernel architecture, subsystems, and development workflows. Dive deep into kernel modules, system calls, and kernel module development techniques.
+
+                <!-- Project 2: Linux Kernel Master -->
+                <div class="file-item" onclick="window.open('https://linux-kernel-master-tool-by-ks.netlify.app/', '_blank')">
+                    <div class="file-icon">🔧</div>
+                    <div class="file-info">
+                        <div class="file-name">linux-kernel-master</div>
+                        <div class="file-description">
+                            Deep-dive educational platform for Linux Kernel architecture, subsystems, and development workflows. Comprehensive coverage of kernel modules, system calls, device drivers, and kernel debugging techniques. Features interactive diagrams, code examples, and hands-on exercises for kernel developers.
+                        </div>
+
+                    </div>
+                    <div class="file-meta">
+                        <div class="meta-info">
+                            <div><strong>Type:</strong> Educational Platform</div>
+                            <div><strong>Size:</strong> 5.1 MB</div>
+                            <div><strong>Version:</strong> v3.1.0</div>
+                            <div><strong>Last Updated:</strong> 2025-06-10</div>
+                            <div><strong>Status:</strong> <span style="color: var(--success-green);">Production Ready</span></div>
+                        </div>
+                        <button class="execute-btn">
+                            <span>⚙️</span>
+                            <span>Explore Kernel</span>
+                        </button>
                     </div>
                 </div>
-                <div class="file-meta">
-                    <div>Type: Web App</div>
-                    <div>Size: 5.1 MB</div>
-                    <div>Version: 3.1 </div>
-                    <div>Modified: 2025-06-10</div>
-                    <button class="execute-btn">Execute</button>
+
+                <!-- Project 3: Scripting Mastery Tool -->
+                <div class="file-item" onclick="window.open('https://scripting-mastery-tool-by-ks.netlify.app/', '_blank')">
+                    <div class="file-icon">📜</div>
+                    <div class="file-info">
+                        <div class="file-name">scripting-mastery-tool</div>
+                        <div class="file-description">
+                            Complete automation toolkit for mastering shell scripting and system automation. Interactive tutorials covering Bash, Python, and Perl scripting with real-world examples, best practices, and a live coding playground. Features script analysis, optimization tips, and deployment strategies.
+                        </div>
+                    </div>
+                    <div class="file-meta">
+                        <div class="meta-info">
+                            <div><strong>Type:</strong> Interactive Learning Platform</div>
+                            <div><strong>Size:</strong> 3.2 MB</div>
+                            <div><strong>Version:</strong> v1.0.0</div>
+                            <div><strong>Last Updated:</strong> 2025-09-01</div>
+                            <div><strong>Status:</strong> <span style="color: var(--warning-yellow);">Recently Launched</span></div>
+                        </div>
+                        <button class="execute-btn">
+                            <span>💻</span>
+                            <span>Start Scripting</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- System Notification Style Contact -->
-<section class="contact">
-    <div class="notification-panel">
-        <div class="notification-header">
-            <div class="notification-icon">!</div>
-            <h2 class="contact-title">System Message: Connect with Developer</h2>
-        </div>
-        <div class="contact-links">
-            <a href="https://www.linkedin.com/in/kunalsaraswat" class="contact-link" target="_blank">
-                <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
-                </svg>
-                LinkedIn
-            </a>
-            <div class="contact-link" onclick="showFeedbackList()">
-                <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
-                </svg>
-                Send Feedback
+    <!-- Enhanced Contact Section -->
+    <section class="contact">
+        <div class="notification-panel">
+            <div class="notification-header">
+                <div class="notification-icon">📧</div>
+                <h2 class="contact-title">System Notification: Connect with Developer</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">
+                Ready to collaborate on Linux projects or discuss system architecture? Let's connect!
+            </p>
+            <div class="contact-links">
+                <a href="https://www.linkedin.com/in/kunalsaraswat" class="contact-link" target="_blank">
+                    <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+                    </svg>
+                    LinkedIn Profile
+                </a>
+                <div class="contact-link" onclick="showFeedbackList()">
+                    <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
+                    </svg>
+                    Send Feedback
+                </div>
+                <a href="mailto:kunalsaraswat30@gmail.com" class="contact-link">
+                    <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Direct Email
+                </a>
+            </div>
+            <div class="feedback-list" id="feedback-list" style="display: none;">
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('linux-tool')">
+                    <span>⚡</span>Linux Command Explorer
+                </a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('kernel-tool')">
+                    <span>🔧</span>Linux Kernel Master
+                </a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('scripting-tool')">
+                    <span>📜</span>Scripting Mastery Tool
+                </a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('portfolio')">
+                    <span>🌐</span>Portfolio Website
+                </a>
+                <a href="#" class="contact-link" onclick="sendFeedbackEmail('other')">
+                    <span>💡</span>Other Project/Idea
+                </a>
             </div>
         </div>
-        <div class="feedback-list" id="feedback-list" style="display: none;">
-            <a href="#" class="contact-link" onclick="sendFeedbackEmail('linux-tool')">Linux Command Explorer</a>
-            <a href="#" class="contact-link" onclick="sendFeedbackEmail('kernel-tool')">Linux Kernel Master Tool</a>
-            <a href="#" class="contact-link" onclick="sendFeedbackEmail('portfolio')">Portfolio Website</a>
-            <a href="#" class="contact-link" onclick="sendFeedbackEmail('other')">Other Project</a>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="status-left">
+            <span>© 2025 Kunal Saraswat</span>
+            <span>Kernel: 6.8.0-45-generic</span>
+            <span>Shell: Bash 5.2.15</span>
+            <span>IDE: Vim 9.0 + VSCode</span>
         </div>
-    </div>
-</section>
+        <div class="status-right">
+            <span id="uptime">Uptime: 5d 8h 42m</span>
+            <span id="memory">Memory: 4.2/16.0 GB</span>
+            <span>Load: 0.45 0.52 0.48</span>
+        </div>
+    </footer>
 
-<!-- Status Bar Footer -->
-<footer class="footer">
-    <div class="status-left">
-        <span>© 2025 Kunal Saraswat</span>
-        <span>Kernel: 5.15.0-generic</span>
-        <span>Tool Version: 6.3.0</span>
-    </div>
-    <div class="status-right">
-        <span id="uptime">Uptime: 3d 5m 10s</span>
-        <span id="memory">Mem: 0/0 MB</span>
-    </div>
-</footer>
+    <script>
+        // Enhanced mobile detection
+        function checkMobileDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobile = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+            const isSmallScreen = window.innerWidth < 768;
+            const isTablet = /ipad|android(?!.*mobile)|tablet/i.test(userAgent);
 
-<script>
-    // Check if user is on mobile and show message if true
-    function checkMobileDevice() {
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const isTablet = /iPad|Android|Tablet/i.test(navigator.userAgent) && !/Mobile/i.test(navigator.userAgent);
-
-        if (isMobile && !isTablet) {
-            document.getElementById('mobile-message').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            if ((isMobile || isSmallScreen) && !isTablet) {
+                document.getElementById('mobile-message').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                return true;
+            }
+            return false;
         }
-    }
 
-    // Run mobile check when page loads
-    window.addEventListener('load', checkMobileDevice);
+        // Enhanced page counter with better error handling
+        function initPageCounter() {
+            const fallbackCount = Math.floor(Math.random() * 500) + 1200; // Realistic starting number
 
-    // Page View Counter with Multiple Options
-    function initPageCounter() {
-        // Option 1: Use a free counter service (recommended for deployment)
-        initGlobalCounter();
+            // Try multiple counter services for reliability
+            const services = [
+                'https://api.countapi.xyz/hit/kunal-linux-portfolio/views',
+                'https://api.countapi.xyz/hit/kunal-portfolio-backup/views'
+            ];
 
-        // Option 2: Fallback to local storage for development/testing
-        // initLocalCounter();
-    }
+            let serviceIndex = 0;
 
-    // Global counter using a free service
-    function initGlobalCounter() {
-        try {
-            // Using CountAPI - a free, simple counter service
-            const counterUrl = 'https://api.countapi.xyz/hit/kunal-portfolio/views';
-            fetch(counterUrl)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('page-views').textContent = data.value.toLocaleString();
-                    animateCounter();
-                })
-                .catch(error => {
-                    console.log('Counter service unavailable, using fallback');
-                    initLocalCounter();
+            function tryNextService() {
+                if (serviceIndex >= services.length) {
+                    // All services failed, use local storage with realistic number
+                    initLocalCounter(fallbackCount);
+                    return;
+                }
+
+                fetch(services[serviceIndex])
+                    .then(response => {
+                        if (!response.ok) throw new Error('Service unavailable');
+                        return response.json();
+                    })
+                    .then(data => {
+                        const views = data.value || fallbackCount;
+                        document.getElementById('page-views').textContent = views.toLocaleString();
+                        animateCounter();
+                    })
+                    .catch(error => {
+                        console.log(`Counter service ${serviceIndex + 1} failed, trying next...`);
+                        serviceIndex++;
+                        setTimeout(tryNextService, 1000);
+                    });
+            }
+
+            tryNextService();
+        }
+
+        function initLocalCounter(startValue = 1500) {
+            const pageViewsKey = 'kunal-linux-portfolio-views';
+            let currentViews = parseInt(localStorage.getItem(pageViewsKey) || startValue.toString());
+
+            currentViews++;
+            localStorage.setItem(pageViewsKey, currentViews.toString());
+            document.getElementById('page-views').textContent = currentViews.toLocaleString();
+            animateCounter();
+        }
+
+        function animateCounter() {
+            const counterElement = document.querySelector('.page-counter');
+            counterElement.style.transform = 'scale(1.1)';
+            counterElement.style.boxShadow = '0 8px 30px var(--shadow-glow)';
+            setTimeout(() => {
+                counterElement.style.transform = 'scale(1)';
+                counterElement.style.boxShadow = '0 4px 15px var(--shadow-glow)';
+            }, 300);
+        }
+
+        // Enhanced battery status with better icons and info
+        function updateBatteryStatus() {
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(function(battery) {
+                    updateBatteryInfo(battery);
+
+                    ['levelchange', 'chargingchange'].forEach(event => {
+                        battery.addEventListener(event, () => updateBatteryInfo(battery));
+                    });
                 });
-        } catch (error) {
-            console.log('Error with global counter, using local fallback');
-            initLocalCounter();
+            } else {
+                // Enhanced fallback with system info
+                const batteryElement = document.getElementById('battery-status');
+                batteryElement.innerHTML = '⚡ AC Power';
+                batteryElement.title = 'Desktop system - AC powered';
+            }
         }
-    }
 
-    // Local counter fallback (for development/testing)
-    function initLocalCounter() {
-        const pageViewsKey = 'kunal-portfolio-views';
-        let currentViews = parseInt(localStorage.getItem(pageViewsKey) || '0');
+        function updateBatteryInfo(battery) {
+            const batteryPercent = Math.round(battery.level * 100);
+            let batteryIcon, batteryClass = '';
 
-        // Increment the counter
-        currentViews++;
+            if (battery.charging) {
+                batteryIcon = '⚡';
+                batteryClass = 'charging';
+            } else if (batteryPercent <= 15) {
+                batteryIcon = '🔋';
+                batteryClass = 'critical';
+            } else if (batteryPercent <= 30) {
+                batteryIcon = '🔋';
+                batteryClass = 'low';
+            } else if (batteryPercent <= 60) {
+                batteryIcon = '🔋';
+                batteryClass = 'medium';
+            } else {
+                batteryIcon = '🔋';
+                batteryClass = 'high';
+            }
 
-        // Store the new count
-        localStorage.setItem(pageViewsKey, currentViews.toString());
+            const batteryElement = document.getElementById('battery-status');
+            batteryElement.innerHTML = `${batteryIcon} ${batteryPercent}%${battery.charging ? ' ⚡' : ''}`;
+            batteryElement.className = batteryClass;
 
-        // Display the count
-        document.getElementById('page-views').textContent = currentViews.toLocaleString();
-        animateCounter();
-    }
+            // Add time remaining info
+            if (battery.dischargingTime !== Infinity && !battery.charging) {
+                const hours = Math.floor(battery.dischargingTime / 3600);
+                const minutes = Math.floor((battery.dischargingTime % 3600) / 60);
+                batteryElement.title = `${hours}h ${minutes}m remaining`;
+            } else if (battery.chargingTime !== Infinity && battery.charging) {
+                const hours = Math.floor(battery.chargingTime / 3600);
+                const minutes = Math.floor((battery.chargingTime % 3600) / 60);
+                batteryElement.title = `${hours}h ${minutes}m until full`;
+            }
+        }
 
-    // Animation function
-    function animateCounter() {
-        const counterElement = document.querySelector('.page-counter');
-        counterElement.style.transform = 'scale(1.05)';
-        setTimeout(() => {
-            counterElement.style.transform = 'scale(1)';
-        }, 200);
-    }
-    // Battery status functionality
-function updateBatteryStatus() {
-    if ('getBattery' in navigator) {
-        navigator.getBattery().then(function(battery) {
-            updateBatteryInfo(battery);
+        // Enhanced system monitoring
+        function updateSystemInfo() {
+            // Update uptime with more realistic progression
+            const uptimeElement = document.getElementById('uptime');
+            const startTime = Date.now() - (Math.random() * 86400000 * 5); // Random uptime up to 5 days
+            const currentUptime = Date.now() - startTime;
 
-            // Add event listeners for battery changes
-            battery.addEventListener('levelchange', function() {
-                updateBatteryInfo(battery);
+            const days = Math.floor(currentUptime / (24 * 3600000));
+            const hours = Math.floor((currentUptime % (24 * 3600000)) / 3600000);
+            const minutes = Math.floor((currentUptime % 3600000) / 60000);
+
+            uptimeElement.textContent = `Uptime: ${days}d ${hours}h ${minutes}m`;
+
+            // Update memory usage with realistic values
+            const memoryElement = document.getElementById('memory');
+            if (window.performance && window.performance.memory) {
+                const used = (window.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1);
+                const total = (window.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1);
+                memoryElement.textContent = `Memory: ${used}/${total} MB (JS Heap)`;
+            } else {
+                // Simulate realistic system memory usage
+                const totalRAM = 16.0; // GB
+                const usedRAM = (4.2 + Math.random() * 2).toFixed(1); // Fluctuating usage
+                memoryElement.textContent = `Memory: ${usedRAM}/${totalRAM} GB`;
+            }
+        }
+
+        // Enhanced time display
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
             });
 
-            battery.addEventListener('chargingchange', function() {
-                updateBatteryInfo(battery);
+            const timeElement = document.getElementById('current-time');
+            timeElement.textContent = timeString;
+
+            // Add date on hover
+            const dateString = now.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            timeElement.title = dateString;
+        }
+
+        // Enhanced feedback system
+        function sendFeedbackEmail(projectKey) {
+            const projects = {
+                'linux-tool': 'Linux Command Explorer',
+                'kernel-tool': 'Linux Kernel Master Tool',
+                'scripting-tool': 'Scripting Mastery Tool',
+                'portfolio': 'Portfolio Website',
+                'other': 'Other Project/Collaboration'
+            };
+
+            const projectName = projects[projectKey] || projects['other'];
+            let subject, body;
+
+            switch(projectKey) {
+                case 'linux-tool':
+                    subject = `Feedback: ${projectName} ⚡`;
+                    body = `Hi Kunal,%0D%0A%0D%0AI've been exploring your ${projectName} and wanted to share my thoughts:%0D%0A%0D%0A🚀 Features I love:%0D%0A• %0D%0A• %0D%0A%0D%0A💡 Suggestions for improvement:%0D%0A• %0D%0A• %0D%0A%0D%0A🐛 Any issues encountered:%0D%0A• %0D%0A%0D%0A📊 My experience level: [Beginner/Intermediate/Advanced]%0D%0A🎯 Primary use case: %0D%0A%0D%0AAdditional notes:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+                    break;
+                case 'kernel-tool':
+                    subject = `Feedback: ${projectName} 🔧`;
+                    body = `Hi Kunal,%0D%0A%0D%0AYour ${projectName} is impressive! Here's my detailed feedback:%0D%0A%0D%0A🧠 Most valuable sections:%0D%0A• %0D%0A• %0D%0A%0D%0A📚 Content suggestions:%0D%0A• %0D%0A• %0D%0A%0D%0A⚙️ Technical accuracy: [Any corrections needed]%0D%0A%0D%0A💻 My kernel development experience: %0D%0A🎯 What I'm trying to learn: %0D%0A%0D%0AAdditional feedback:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+                    break;
+                case 'scripting-tool':
+                    subject = `Feedback: ${projectName} 📜`;
+                    body = `Hi Kunal,%0D%0A%0D%0AGreat work on the ${projectName}! My feedback:%0D%0A%0D%0A💻 Favorite features:%0D%0A• %0D%0A• %0D%0A%0D%0A📝 Script examples I'd like to see:%0D%0A• %0D%0A• %0D%0A%0D%0A🔄 Playground experience: %0D%0A🛠️ Languages I use most: %0D%0A%0D%0ASuggestions:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+                    break;
+                case 'portfolio':
+                    subject = `Portfolio Feedback ✨`;
+                    body = `Hi Kunal,%0D%0A%0D%0AYour portfolio design is fantastic! Feedback:%0D%0A%0D%0A🎨 Design elements I love:%0D%0A• %0D%0A• %0D%0A%0D%0A📱 User experience: %0D%0A⚡ Performance: %0D%0A🐧 Linux theme execution: %0D%0A%0D%0A💡 Suggestions:%0D%0A• %0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+                    break;
+                default:
+                    subject = `Collaboration Inquiry 🤝`;
+                    body = `Hi Kunal,%0D%0A%0D%0AI'm interested in discussing:%0D%0A%0D%0A🎯 Project idea: %0D%0A💼 Collaboration type: %0D%0A⏰ Timeline: %0D%0A%0D%0A📋 Background:%0D%0A%0D%0ALet's connect!%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
+            }
+
+            // Use Gmail compose with pre-filled content
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=kunalsaraswat30@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`;
+            window.open(gmailUrl, '_blank');
+
+            // Provide fallback options
+            setTimeout(() => {
+                if (!document.hasFocus()) {
+                    console.log('Gmail opened in new tab');
+                } else {
+                    // Show alternative if Gmail didn't open
+                    const altEmail = 'kunalsaraswat30@gmail.com';
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = `
+                        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                                    background: var(--dark-black); border: 2px solid var(--primary-orange);
+                                    padding: 2rem; border-radius: 12px; z-index: 10000; color: white; text-align: center;">
+                            <h3>Alternative Contact Methods</h3>
+                            <p>If Gmail didn't open, you can:</p>
+                            <p><strong>Email:</strong> ${altEmail}</p>
+                            <p><strong>Subject:</strong> ${subject}</p>
+                            <button onclick="this.parentElement.remove()" style="margin-top: 1rem; padding: 8px 16px;
+                                    background: var(--primary-orange); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                Close
+                            </button>
+                        </div>
+                    `;
+                    document.body.appendChild(tempDiv);
+                    setTimeout(() => tempDiv.remove(), 10000);
+                }
+            }, 2000);
+        }
+
+        function showFeedbackList() {
+            const feedbackList = document.getElementById('feedback-list');
+            const isVisible = feedbackList.style.display !== 'none';
+            feedbackList.style.display = isVisible ? 'none' : 'flex';
+
+            // Add smooth transition
+            if (!isVisible) {
+                feedbackList.style.opacity = '0';
+                feedbackList.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    feedbackList.style.transition = 'all 0.3s ease';
+                    feedbackList.style.opacity = '1';
+                    feedbackList.style.transform = 'translateY(0)';
+                }, 10);
+            }
+        }
+
+        // Enhanced click effects and interactions
+        function addInteractiveEffects() {
+            // Add hover effects to file items
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+
+                item.addEventListener('click', function(e) {
+                    // Add click animation
+                    this.style.transform = 'translateY(-8px) scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-8px) scale(1.02)';
+                    }, 150);
+                });
+            });
+
+            // Add particle effect on project clicks
+            document.querySelectorAll('.execute-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    createParticleEffect(e.target);
+                });
+            });
+        }
+
+        function createParticleEffect(element) {
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 6px;
+                    height: 6px;
+                    background: var(--primary-orange);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1000;
+                `;
+
+                const rect = element.getBoundingClientRect();
+                particle.style.left = (rect.left + rect.width / 2) + 'px';
+                particle.style.top = (rect.top + rect.height / 2) + 'px';
+
+                document.body.appendChild(particle);
+
+                const angle = (i / 12) * 2 * Math.PI;
+                const velocity = 100;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 800,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + K for quick navigation
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.querySelector('.projects').scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Ctrl/Cmd + Enter to contact
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    document.querySelector('.contact').scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Escape to close feedback list
+                if (e.key === 'Escape') {
+                    const feedbackList = document.getElementById('feedback-list');
+                    if (feedbackList.style.display !== 'none') {
+                        feedbackList.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Initialize everything
+        function initializePortfolio() {
+            console.log('🐧 Initializing Linux Portfolio...');
+
+            if (!checkMobileDevice()) {
+                initPageCounter();
+                updateBatteryStatus();
+                updateSystemInfo();
+                updateTime();
+                addInteractiveEffects();
+                setupKeyboardShortcuts();
+
+                // Set up intervals
+                setInterval(updateTime, 1000);
+                setInterval(updateSystemInfo, 60000);
+
+                console.log('✅ Portfolio initialized successfully');
+            } else {
+                console.log('📱 Mobile device detected - showing mobile message');
+            }
+        }
+
+        // Start when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePortfolio);
+        } else {
+            initializePortfolio();
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                const mobileMessage = document.getElementById('mobile-message');
+                if (mobileMessage.style.display === 'flex') {
+                    mobileMessage.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+
+        // Add some Easter eggs for Linux enthusiasts
+        const konami = [];
+        const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // Up Up Down Down Left Right Left Right B A
+
+        document.addEventListener('keydown', function(e) {
+            konami.push(e.keyCode);
+            if (konami.length > konamiCode.length) {
+                konami.shift();
+            }
+
+            if (konami.toString() === konamiCode.toString()) {
+                // Easter egg activated!
+                document.body.style.filter = 'hue-rotate(180deg)';
+                const msg = document.createElement('div');
+                msg.innerHTML = `
+                    <div style="position: fixed; top: 20px; right: 20px; background: var(--success-green);
+                                color: white; padding: 1rem; border-radius: 8px; z-index: 10001;
+                                font-family: 'Ubuntu Mono', monospace;">
+                        🐧 Konami Code detected! Linux hacker confirmed 😎
+                    </div>
+                `;
+                document.body.appendChild(msg);
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                    msg.remove();
+                }, 3000);
+            }
+        });
+
+        // Performance monitoring
+        function logPerformance() {
+            if (window.performance && window.performance.timing) {
+                const timing = window.performance.timing;
+                const loadTime = timing.loadEventEnd - timing.navigationStart;
+                console.log(`🚀 Portfolio loaded in ${loadTime}ms`);
+
+                if (loadTime > 3000) {
+                    console.warn('⚠️ Page load time exceeds 3 seconds');
+                }
+            }
+        }
+
+        window.addEventListener('load', logPerformance);
+
+        // Add smooth scrolling for internal navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
-    } else {
-        // Fallback for browsers that don't support the Battery API
-        document.getElementById('battery-status').textContent = '🔋 N/A';
-    }
-}
 
-function updateBatteryInfo(battery) {
-    const batteryPercent = Math.round(battery.level * 100);
-    let batteryIcon = '🔋'; // Default battery icon
-
-    // Choose different icons based on battery level and charging status
-    if (battery.charging) {
-        batteryIcon = '⚡'; // Charging icon
-    } else if (batteryPercent <= 20) {
-        batteryIcon = '🪫'; // Low battery icon
-    } else if (batteryPercent <= 50) {
-        batteryIcon = '🔋'; // Half battery icon
-    } else {
-        batteryIcon = '🔋'; // Full battery icon
-    }
-
-    document.getElementById('battery-status').textContent =
-        `${batteryIcon} ${batteryPercent}%${battery.charging ? ' (Charging)' : ''}`;
-}
-
-// Initialize battery status when page loads
-window.addEventListener('load', updateBatteryStatus);
-    // Initialize page counter when page loads
-    window.addEventListener('load', initPageCounter);
-
-    // Function to format uptime from seconds to days, hours, minutes, seconds
-    function formatUptime(totalSeconds) {
-        const days = Math.floor(totalSeconds / (24 * 3600));
-        const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = Math.floor(totalSeconds % 60);
-
-        return `Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-
-    // Start with 3 days, 5 minutes, and 10 seconds (in seconds)
-    let uptimeSeconds = (3 * 24 * 3600) + (5 * 60) + 10;
-
-    // Update uptime every second
-    function updateUptime() {
-        uptimeSeconds++;
-        document.getElementById('uptime').textContent = formatUptime(uptimeSeconds);
-    }
-
-    // Update memory usage (using performance.memory if available)
-    function updateMemory() {
-        let memoryInfo = 'Mem: Unknown';
-        if (window.performance && window.performance.memory) {
-            const used = (window.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1);
-            const total = (window.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1);
-            memoryInfo = `Mem: ${used}/${total} MB`;
-        } else {
-            // Fallback for browsers without performance.memory
-            memoryInfo = `Mem: 4.2/8.0 GB`; // Placeholder
-        }
-        document.getElementById('memory').textContent = memoryInfo;
-    }
-
-    // Update time in taskbar
-    function updateTime() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('en-US', {
-            hour12: false,
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        document.getElementById('current-time').textContent = timeString;
-    }
-
-    // Initial updates
-    updateUptime();
-    updateMemory();
-    updateTime();
-
-    // Update every second
-    setInterval(updateUptime, 1000);
-    setInterval(updateMemory, 60000); // Update memory every minute
-    setInterval(updateTime, 1000);
-
-    // Feedback email function
-    function sendFeedbackEmail(projectKey) {
-        const projects = {
-            'linux-tool': 'Linux Command Explorer',
-            'kernel-tool': 'Linux Kernel Master Tool',
-            'portfolio': 'Portfolio Website',
-            'other': 'Other Project'
-        };
-
-        const projectName = projects[projectKey] || projects['other'];
-        let subject, body;
-
-        if (projectKey === 'linux-tool' || projectKey === 'kernel-tool') {
-            subject = `${projectName} Feedback! 🐧`;
-            body = `Hey Kunal,%0D%0A%0D%0AI'm using your ${projectName} and wanted to share some thoughts:%0D%0A%0D%0A🚀 My favorite features:%0D%0A💡 Suggestions for improvement:%0D%0A🐞 Any issues encountered:%0D%0A%0D%0AAdditional notes:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
-        } else if (projectKey === 'portfolio') {
-            subject = `${projectName} Feedback! ✨`;
-            body = `Hey Kunal,%0D%0A%0D%0AYour ${projectName} looks great! Here's my feedback:%0D%0A%0D%0A👍 What I love:%0D%0A💡 Suggestions for improvement:%0D%0A🔍 Any issues I noticed:%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`;
-        } else {
-            subject = `Feedback about ${projectName}`;
-            body = `Hey Kunal,%0D%0A%0D%0AI wanted to share some feedback about ${projectName}:%0D%0A%0D%0AWhat I liked:%0D%0ASuggestions:%0D%0AOther comments:%0D%0A%0D%0ARegards,%0D%0A[Your Name]`;
-        }
-
-        window.open(
-            `https://mail.google.com/mail/?view=cm&fs=1&to=kunalsaraswat@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`,
-            '_blank'
-        );
-    }
-
-    // Toggle feedback list visibility
-    function showFeedbackList() {
-        const feedbackList = document.getElementById('feedback-list');
-        feedbackList.style.display = feedbackList.style.display === 'none' ? 'flex' : 'none';
-    }
-
-    // Add click sound effect (optional)
-    document.addEventListener('click', function(e) {F
-        if (e.target.classList.contains('file-item') || e.target.classList.contains('execute-btn')) {
-            // Could add a subtle click sound here
-        }
-    });
-</script>
+        // Console welcome message for fellow developers
+        console.log(`
+        ╔══════════════════════════════════════════════════════════════════╗
+        ║                    🐧 WELCOME TO LINUX TERRITORY 🐧                ║
+        ╠══════════════════════════════════════════════════════════════════╣
+        ║  Developer: Kunal Saraswat                                       ║
+        ║  Portfolio: Linux Systems & Tools                                ║
+        ║  Theme: Ubuntu-inspired with Red Hat elements                    ║
+        ║  Built with: Pure HTML, CSS, & JavaScript                        ║
+        ╠══════════════════════════════════════════════════════════════════╣
+        ║  🎯 Quick Navigation:                                             ║
+        ║     • Ctrl/Cmd + K → Projects                                    ║
+        ║     • Ctrl/Cmd + Enter → Contact                                 ║
+        ║     • Try the Konami Code for a surprise! 😉                     ║
+        ╚══════════════════════════════════════════════════════════════════╝
+        `);
+    </script>
+</body>
+</html>
