@@ -64,6 +64,27 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(50px, 50px); }
         }
+        /* Add these styles to fix the alignment */
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 60px;
+    padding: 2rem;
+}
+
+.terminal-window, .brand-info {
+    flex: 1;
+    min-width: 300px;
+    max-width: 600px;
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
         /* Mobile message styling */
         .mobile-message {
@@ -200,14 +221,6 @@
             border: 1px solid var(--success-green);
             border-radius: 4px;
             color: var(--success-green);
-        }
-
-        /* Terminal Welcome Section */
-        .header {
-            margin-top: 60px;
-            padding: 4rem 2rem 2rem;
-            text-align: center;
-            position: relative;
         }
 
         .terminal-window {
@@ -1424,6 +1437,145 @@
                 }, 3000);
             }
         });
+        // Function to adjust font sizes for better readability
+function adjustFontSizes() {
+    // Reduce main title size
+    const mainTitle = document.querySelector('.main-title');
+    if (mainTitle) {
+        mainTitle.style.fontSize = '2.8rem';
+    }
+
+    // Reduce subtitle size
+    const subtitle = document.querySelector('.subtitle');
+    if (subtitle) {
+        subtitle.style.fontSize = '1.2rem';
+    }
+
+    // Reduce terminal content font size
+    const terminalContent = document.querySelector('.terminal-content');
+    if (terminalContent) {
+        terminalContent.style.fontSize = '14px';
+    }
+
+    // Reduce project title size
+    const projectsTitle = document.querySelector('.projects-title');
+    if (projectsTitle) {
+        projectsTitle.style.fontSize = '2rem';
+    }
+
+    // Reduce project subtitle size
+    const projectsSubtitle = document.querySelector('.projects-subtitle');
+    if (projectsSubtitle) {
+        projectsSubtitle.style.fontSize = '1rem';
+    }
+
+    // Reduce file name size in projects
+    const fileNames = document.querySelectorAll('.file-name');
+    fileNames.forEach(name => {
+        name.style.fontSize = '1.2rem';
+    });
+
+    // Reduce file description size
+    const fileDescriptions = document.querySelectorAll('.file-description');
+    fileDescriptions.forEach(desc => {
+        desc.style.fontSize = '0.9rem';
+    });
+}
+
+// Function to create split-screen layout
+function createSplitScreen() {
+    const headerSection = document.querySelector('.header');
+    if (!headerSection) return;
+
+    // Create container for split layout
+    const splitContainer = document.createElement('div');
+    splitContainer.style.display = 'flex';
+    splitContainer.style.flexWrap = 'wrap';
+    splitContainer.style.gap = '2rem';
+    splitContainer.style.marginTop = '2rem';
+    splitContainer.style.width = '100%';
+
+    // Get the terminal and brand info elements
+    const terminalWindow = document.querySelector('.terminal-window');
+    const brandInfo = document.querySelector('.brand-info');
+
+    // Clear the header section
+    headerSection.innerHTML = '';
+
+    // Add elements to split container
+    if (terminalWindow && brandInfo) {
+        // Create two columns
+        const leftCol = document.createElement('div');
+        leftCol.style.flex = '1';
+        leftCol.style.minWidth = '300px';
+        leftCol.appendChild(terminalWindow);
+
+        const rightCol = document.createElement('div');
+        rightCol.style.flex = '1';
+        rightCol.style.minWidth = '300px';
+        rightCol.appendChild(brandInfo);
+
+        splitContainer.appendChild(leftCol);
+        splitContainer.appendChild(rightCol);
+
+        // Add to header
+        headerSection.appendChild(splitContainer);
+    }
+}
+
+// Function to reduce the size of the contact section
+function resizeContactSection() {
+    const notificationPanel = document.querySelector('.notification-panel');
+    if (notificationPanel) {
+        notificationPanel.style.padding = '1.5rem';
+        notificationPanel.style.maxWidth = '600px';
+    }
+
+    const contactTitle = document.querySelector('.contact-title');
+    if (contactTitle) {
+        contactTitle.style.fontSize = '1.4rem';
+    }
+
+    const contactLinks = document.querySelectorAll('.contact-link');
+    contactLinks.forEach(link => {
+        link.style.padding = '10px 15px';
+        link.style.fontSize = '14px';
+    });
+}
+
+// Update the initializePortfolio function to include these changes
+function initializePortfolio() {
+    console.log('🐧 Initializing Linux Portfolio...');
+
+    if (!checkMobileDevice()) {
+        initPageCounter();
+        updateBatteryStatus();
+        updateSystemInfo();
+        updateTime();
+        addInteractiveEffects();
+        setupKeyboardShortcuts();
+
+        // Apply the requested changes
+        adjustFontSizes();
+        createSplitScreen();
+        resizeContactSection();
+
+        // Set up intervals
+        setInterval(updateTime, 1000);
+        setInterval(updateSystemInfo, 60000);
+
+        console.log('✅ Portfolio initialized successfully');
+    } else {
+        console.log('📱 Mobile device detected - showing mobile message');
+    }
+}
+
+// Replace the existing DOMContentLoaded event listener
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePortfolio);
+} else {
+    initializePortfolio();
+}
 
         // Performance monitoring
         function logPerformance() {
@@ -1453,6 +1605,20 @@
                 }
             });
         });
+        // This script will ensure both panels have the same height
+function adjustPanelHeights() {
+    const terminal = document.querySelector('.terminal-window');
+    const brandInfo = document.querySelector('.brand-info');
+
+    if (terminal && brandInfo) {
+        const terminalHeight = terminal.offsetHeight;
+        brandInfo.style.minHeight = `${terminalHeight}px`;
+    }
+}
+
+// Call the function when the page loads and when it resizes
+window.addEventListener('load', adjustPanelHeights);
+window.addEventListener('resize', adjustPanelHeights);
 
         // Console welcome message for fellow developers
         console.log(`
